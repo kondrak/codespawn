@@ -2,6 +2,11 @@
 mod tests {
     #[test]
     fn it_works() {
-        println!("Hello world");
+        foo();
     }
+}
+
+pub fn foo()
+{
+    println!("Hello world!");
 }
