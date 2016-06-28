@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!-- declare type names for Rust -->
+<rust type="int" value="c_int" />
+<rust type="float" value="c_float" />
+<rust type="void" value="c_void" />
+<rust type="char" value="c_char" />
+<rust type="int*" value="*mut c_int" />
+<rust type="float*" value="*mut c_float" />
+<rust type="void*" value="*mut c_void" />
+<rust type="const float*" value="*const c_float" />
+<rust type="const char*" value="*const c_char" />
+
+<!-- Use different name for Rust generated struct -->
+<rust name="Foo" value="CFoo" />
