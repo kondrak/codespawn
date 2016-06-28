@@ -17,7 +17,7 @@
     <var type="int" name="y" />
     
     <func type="char" name="return_arg"> <!-- char return_arg(char arg); -->
-        <var type="char" name="arg">
+        <var type="char" name="arg" />
     </func>
     <func type="void (*sample_ptr)"> <!-- function pointer void (*sample_ptr(const char* fmt, ...); -->
         <var type="const char*" name="fmt" />
