@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <!-- include type and name definitions for other languages -->
-<config file="types.xml" />
+<config file="rust.xml" />
 
 <!-- generate an enum -->
 <enum name="FooEnum">
@@ -16,7 +16,7 @@
     <var type="int" name="x" />
     <var type="int" name="y" />
     
-    <func type="char" name="return_arg"> <!-- int return_arg(char arg); -->
+    <func type="char" name="return_arg"> <!-- char return_arg(char arg); -->
         <var type="char" name="arg">
     </func>
     <func type="void (*sample_ptr)"> <!-- function pointer void (*sample_ptr(const char* fmt, ...); -->
