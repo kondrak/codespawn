@@ -44,14 +44,19 @@ fn generate_raw_data(data: &Vec<CodeData>) -> RawCode {
 
     for i in data.iter() {
         println!("processing {} {}", i.0, i.2);
+        let mut attribs = Vec::<(String, String)>::new();
+
+        for a in i.1.iter() {
+            attribs.push((a.name.local_name.clone(), a.value.clone()));
+        }
 
         // if at depth 0, it's a root element, so add it to the main list
         if i.2 == 0 {
-            raw_code.elements.push(RawCodeItem::new(&i.0));
+            raw_code.elements.push(RawCodeItem::new(&i.0, attribs));
         }
         else {
             let mut parent = raw_code.elements.last_mut().unwrap();
-            process_kids(parent, i.2, &i.0);
+            process_kids(parent, i.2, &i.0, &attribs);
         }
     }
 
@@ -63,12 +68,12 @@ fn generate_raw_data(data: &Vec<CodeData>) -> RawCode {
 }
 
 // recursively process children of each code element
-fn process_kids(item: &mut RawCodeItem, depth: u8, name: &str) {
+fn process_kids(item: &mut RawCodeItem, depth: u8, name: &str, attribs: &Vec<(String, String)>) {
     if depth > 1 {
-        process_kids(item.children.last_mut().unwrap(), depth-1, name);
+        process_kids(item.children.last_mut().unwrap(), depth-1, name, attribs);
     }
     else {
-        println!("add child {} to {}", name, item.name);
-        item.children.push(RawCodeItem::new(name));
+        println!("add child {} to {} attrib cnt {}", name, item.name, attribs.len());
+        item.children.push(RawCodeItem::new(name, attribs.clone()));
     }
 }

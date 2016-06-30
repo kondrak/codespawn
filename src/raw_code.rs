@@ -1,12 +1,14 @@
 pub struct RawCodeItem {
     pub name: String,
+    pub attributes: Vec<(String, String)>,
     pub children: Vec<RawCodeItem>
 }
 
 impl RawCodeItem {
-    pub fn new(item_name: &str) -> RawCodeItem {
+    pub fn new(item_name: &str, item_attribs: Vec<(String, String)>) -> RawCodeItem {
         RawCodeItem {
             name: String::from(item_name),
+            attributes: item_attribs,
             children: Vec::<RawCodeItem>::new()
         }
     }
