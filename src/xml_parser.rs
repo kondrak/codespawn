@@ -20,7 +20,6 @@ pub fn process_xml(filename: &str) -> RawCode
     let mut depth = 0;
 
     for e in parser {
-
         match e {
             Ok(XmlEvent::StartElement { name, attributes, .. }) => {
                 code_data.push((name.local_name, attributes, depth));
@@ -46,12 +45,13 @@ fn generate_raw_data(data: &Vec<CodeData>) -> RawCode {
     for i in data.iter() {
         println!("processing {} {}", i.0, i.2);
 
+        // if at depth 0, it's a root element, so add it to the main list
         if i.2 == 0 {
-            raw_code.elements.push(RawCodeItem::new(i.0.clone()));
+            raw_code.elements.push(RawCodeItem::new(&i.0));
         }
         else {
             let mut parent = raw_code.elements.last_mut().unwrap();
-            process_kids(parent, i.2, i.0.clone());
+            process_kids(parent, i.2, &i.0);
         }
     }
 
@@ -63,9 +63,9 @@ fn generate_raw_data(data: &Vec<CodeData>) -> RawCode {
 }
 
 // recursively process children of each code element
-fn process_kids(item: &mut RawCodeItem, depth: u8, name: String) {
+fn process_kids(item: &mut RawCodeItem, depth: u8, name: &str) {
     if depth > 1 {
-        process_kids(item.children.last_mut().unwrap(), depth-1, name.clone());
+        process_kids(item.children.last_mut().unwrap(), depth-1, name);
     }
     else {
         println!("add child {} to {}", name, item.name);

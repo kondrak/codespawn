@@ -4,9 +4,9 @@ pub struct RawCodeItem {
 }
 
 impl RawCodeItem {
-    pub fn new(item_name: String) -> RawCodeItem {
+    pub fn new(item_name: &str) -> RawCodeItem {
         RawCodeItem {
-            name: item_name,
+            name: String::from(item_name),
             children: Vec::<RawCodeItem>::new()
         }
     }
