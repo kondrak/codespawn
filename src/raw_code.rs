@@ -1,11 +1,25 @@
+pub struct RawCodeItem {
+    pub name: String,
+    pub children: Vec<RawCodeItem>
+}
+
+impl RawCodeItem {
+    pub fn new(item_name: String) -> RawCodeItem {
+        RawCodeItem {
+            name: item_name,
+            children: Vec::<RawCodeItem>::new()
+        }
+    }
+}
+
 pub struct RawCode {
-    pub foo: u8,
+    pub elements: Vec<RawCodeItem>
 }
 
 impl RawCode {
     pub fn new() -> RawCode {
         RawCode {
-            foo: 0
+            elements: Vec::<RawCodeItem>::new()
         }
     }
 
