@@ -60,9 +60,7 @@ fn generate_raw_data(data: &Vec<CodeData>) -> RawCode {
         }
     }
 
-    for i in raw_code.elements.iter() {
-        println!("{} {}", i.name, i.children.len());
-    }
+    println!("{}", raw_code);
 
     raw_code
 }
