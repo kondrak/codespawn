@@ -89,11 +89,11 @@ impl RawCode {
 
 impl fmt::Display for RawCode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let _ = write!(f, "\n");
+        let _ = write!(f, "*\n");
         for e in 0..self.elements.len() {
             let mut empty_spaces = Vec::<u8>::new();
-            let _ = self.print_element(&self.elements[e], f, 0, &mut empty_spaces);
+            self.print_element(&self.elements[e], f, 0, &mut empty_spaces);
         }
-        write!(f, "\n")
+        write!(f, "*\n")
     }
 }
