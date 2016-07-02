@@ -41,8 +41,13 @@ impl RawCode {
     fn print_element(&self, e: &RawCodeItem, f: &mut fmt::Formatter, depth: u8, empty_spaces: &mut Vec<u8>) {
         // indentation
         for i in 0..depth {
-            let idx = empty_spaces.binary_search(&i);
-            let separator = match idx { Ok(_) => { " " }, _ => { "|" } };
+            let mut separator = "|";
+            for j in empty_spaces.iter() {
+                if i == *j {
+                    separator = " ";
+                    break;
+                }
+            }
             let _ = write!(f, "{}  ", separator);
         }
 
@@ -67,6 +72,7 @@ impl RawCode {
                     empty_spaces.push(depth+1);
                 }
                 else {
+                    empty_spaces.sort();
                     let idx = empty_spaces.binary_search(&(depth+1));
                     match idx { Ok(_) => { empty_spaces.remove(idx.unwrap()); }, _ => {} };
                 }
