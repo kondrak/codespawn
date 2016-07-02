@@ -38,26 +38,21 @@ impl RawCode {
     }
 
     // used by Display trait to print the tree of elements
-    fn print_element(&self, e: &RawCodeItem, f: &mut fmt::Formatter, is_last: bool, num_spaces: u8, depth: u8) {
-        if depth > 0 {
-            let _ = write!(f, "|  ");
-
-            if num_spaces > 0 {
-                for _ in 0..depth-1-num_spaces {
-                    let _ = write!(f, "|  ");
-                }
-                for _ in 0..num_spaces {
-                    let _ = write!(f, "   ");
+    fn print_element(&self, e: &RawCodeItem, f: &mut fmt::Formatter, depth: u8, empty_spaces: &mut Vec<u8>) {
+        // indentation
+        for i in 0..depth {
+            let mut separator = "|";
+            for j in empty_spaces.iter() {
+                if i == *j {
+                    separator = " ";
+                    break;
                 }
             }
-            else {
-                for _ in 0..depth-1 {
-                    let _ = write!(f, "|  ");
-                }
-            }
+            let _ = write!(f, "{}  ", separator);
         }
 
         let _ = write!(f, "|--{}", e.name);
+        // print attributes
         if e.attributes.len() > 0 {
             let _ = write!(f, " [");
             for a in 0..e.attributes.len() {
@@ -70,22 +65,18 @@ impl RawCode {
         }
         let _ = write!(f, "\n");
 
+        // child processing
         if e.children.len() > 0 {
             for c in 0..e.children.len() {
-                let ne = if is_last && depth > 0 { num_spaces+1 } else { 0 };
-                let _ = self.print_element(&e.children[c], f, (e.children.len() - c) == 1, ne, depth+1);
-            }
-
-            if !is_last {
-                for _ in 0..depth {
-                    let _ = write!(f, "|  ");
+                if (e.children.len() - c) == 1 {
+                    empty_spaces.push(depth+1);
                 }
-
-                let _ = write!(f, "|\n");
+                self.print_element(&e.children[c], f, depth+1, empty_spaces);
             }
-        }
-        else if depth == 0 {
-            let _ = write!(f, "|\n");
+
+            if depth == 1 {
+                empty_spaces.clear();
+            }
         }
     }
 }
@@ -94,7 +85,8 @@ impl fmt::Display for RawCode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let _ = write!(f, "\n");
         for e in 0..self.elements.len() {
-            let _ = self.print_element(&self.elements[e], f, (self.elements.len() - e) == 1, 0, 0);
+            let mut empty_spaces = Vec::<u8>::new();
+            let _ = self.print_element(&self.elements[e], f, 0, &mut empty_spaces);
         }
         write!(f, "\n")
     }
