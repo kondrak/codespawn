@@ -38,9 +38,23 @@ impl RawCode {
     }
 
     // used by Display trait to print the tree of elements
-    fn print_element(&self, e: &RawCodeItem, f: &mut fmt::Formatter, depth: u8) {
-        for _ in 0..depth {
+    fn print_element(&self, e: &RawCodeItem, f: &mut fmt::Formatter, last_child: bool, num_empty: u8, depth: u8) {
+        if depth > 0 {
             let _ = write!(f, "|  ");
+
+            if num_empty > 0 {
+                for _ in 0..depth-1-num_empty {
+                    let _ = write!(f, "|  ");
+                }
+                for _ in 0..num_empty {
+                    let _ = write!(f, "   ");
+                }
+            }
+            else {
+                for _ in 0..depth-1 {
+                    let _ = write!(f, "|  ");
+                }
+            }
         }
 
         let _ = write!(f, "|--{}", e.name);
@@ -57,14 +71,18 @@ impl RawCode {
         let _ = write!(f, "\n");
 
         if e.children.len() > 0 {
-            for c in e.children.iter() {
-                let _ = self.print_element(c, f, depth+1);
-            }
-            for _ in 0..depth {
-                let _ = write!(f, "|  ");
+            for c in 0..e.children.len() {
+                let ne = if last_child && depth > 0 { num_empty+1 } else { 0 };
+                let _ = self.print_element(&e.children[c], f, (e.children.len() - c) == 1, ne, depth+1);
             }
 
-            let _ = write!(f, "|\n");
+            if !last_child {
+                for _ in 0..depth {
+                    let _ = write!(f, "|  ");
+                }
+
+                let _ = write!(f, "|\n");
+            }
         }
         else if depth == 0 {
             let _ = write!(f, "|\n");
@@ -75,8 +93,8 @@ impl RawCode {
 impl fmt::Display for RawCode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let _ = write!(f, "\n");
-        for e in self.elements.iter() {
-            let _ = self.print_element(e, f, 0);
+        for e in 0..self.elements.len() {
+            let _ = self.print_element(&self.elements[e], f, (self.elements.len() - e) == 1, 0, 0);
         }
         write!(f, "\n")
     }

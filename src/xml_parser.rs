@@ -43,7 +43,7 @@ fn generate_raw_data(data: &Vec<CodeData>) -> RawCode {
     let mut raw_code = RawCode::new();
 
     for i in data.iter() {
-        println!("processing {} {}", i.0, i.2);
+        //println!("processing {} {}", i.0, i.2);
         let mut attribs = Vec::<(String, String)>::new();
 
         for a in i.1.iter() {
@@ -71,7 +71,7 @@ fn process_kids(item: &mut RawCodeItem, depth: u8, name: &str, attribs: &Vec<(St
         process_kids(item.children.last_mut().unwrap(), depth-1, name, attribs);
     }
     else {
-        println!("add child {} to {} attrib cnt {}", name, item.name, attribs.len());
+        //println!("add child {} to {} attrib cnt {}", name, item.name, attribs.len());
         item.children.push(RawCodeItem::new(name, attribs.clone()));
     }
 }
