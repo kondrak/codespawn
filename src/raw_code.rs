@@ -38,15 +38,15 @@ impl RawCode {
     }
 
     // used by Display trait to print the tree of elements
-    fn print_element(&self, e: &RawCodeItem, f: &mut fmt::Formatter, last_child: bool, num_empty: u8, depth: u8) {
+    fn print_element(&self, e: &RawCodeItem, f: &mut fmt::Formatter, is_last: bool, num_spaces: u8, depth: u8) {
         if depth > 0 {
             let _ = write!(f, "|  ");
 
-            if num_empty > 0 {
-                for _ in 0..depth-1-num_empty {
+            if num_spaces > 0 {
+                for _ in 0..depth-1-num_spaces {
                     let _ = write!(f, "|  ");
                 }
-                for _ in 0..num_empty {
+                for _ in 0..num_spaces {
                     let _ = write!(f, "   ");
                 }
             }
@@ -72,11 +72,11 @@ impl RawCode {
 
         if e.children.len() > 0 {
             for c in 0..e.children.len() {
-                let ne = if last_child && depth > 0 { num_empty+1 } else { 0 };
+                let ne = if is_last && depth > 0 { num_spaces+1 } else { 0 };
                 let _ = self.print_element(&e.children[c], f, (e.children.len() - c) == 1, ne, depth+1);
             }
 
-            if !last_child {
+            if !is_last {
                 for _ in 0..depth {
                     let _ = write!(f, "|  ");
                 }
