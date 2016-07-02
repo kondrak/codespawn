@@ -1,4 +1,5 @@
 use std::fmt;
+use std::collections::HashMap;
 
 pub struct RawCodeItem {
     pub name: String,
@@ -16,13 +17,31 @@ impl RawCodeItem {
     }
 }
 
+pub struct CodeConfig {
+    pub name: String,
+    pub type_dict: HashMap<String, String>,
+    pub name_dict: HashMap<String, String>
+}
+
+impl CodeConfig {
+    pub fn new(cfg_name: &str) -> CodeConfig {
+        CodeConfig {
+            name: String::from(cfg_name),
+            type_dict: HashMap::<String, String>::new(),
+            name_dict: HashMap::<String, String>::new()
+        }
+    }
+}
+
 pub struct RawCode {
+    pub configs: HashMap<String, CodeConfig>,
     pub elements: Vec<RawCodeItem>
 }
 
 impl RawCode {
     pub fn new() -> RawCode {
         RawCode {
+            configs: HashMap::<String, CodeConfig>::new(),
             elements: Vec::<RawCodeItem>::new()
         }
     }
@@ -95,5 +114,25 @@ impl fmt::Display for RawCode {
             self.print_element(&self.elements[e], f, 0, &mut empty_spaces);
         }
         write!(f, "*\n")
+    }
+}
+
+impl fmt::Display for CodeConfig {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let _ = write!(f, "Config: {}\n", self.name);
+        if self.name_dict.len() > 0 {
+            let _ = write!(f, "Names:\n");
+        }
+        for (k, v) in &self.name_dict {
+            let _ = write!(f, "  {} = {}\n", k, v);
+        }
+        if self.type_dict.len() > 0 {
+            let _ = write!(f, "Types:\n");
+        }
+        for (k, v) in &self.type_dict {
+            let _ = write!(f, "  {} = {}\n", k, v);
+        }
+
+        write!(f, "")
     }
 }
