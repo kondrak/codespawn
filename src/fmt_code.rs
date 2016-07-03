@@ -1,9 +1,10 @@
+use std::fmt;
 use std::fs::File;
 use std::error::Error;
 use std::io;
 use std::io::prelude::*;
 use std::path::Path;
-use raw_code::{CodeItem, CodeConfig};
+use raw_code::{CodeItem, CodeConfig, RawCode};
 
 #[derive(PartialEq, Eq, Hash)]
 pub enum Lang {
@@ -73,5 +74,26 @@ impl FormattedCode {
     // generate a string with output code
     pub fn to_string(&self) -> String {
         String::from("Generated code\nTODO")
+    }
+}
+
+impl fmt::Display for Lang {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let str_name = match *self {
+            Lang::Cpp => "C/C++", Lang::Rust => "Rust"
+        };
+        write!(f, "{}", str_name)
+    }
+}
+
+impl fmt::Display for FormattedCode {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let _ = write!(f, "Target: {}\n", self.language);
+        let _ = write!(f, "*\n");
+        for e in 0..self.elements.len() {
+            let mut empty_spaces = Vec::<u8>::new();
+            RawCode::print_element(&self.elements[e], f, 0, &mut empty_spaces);
+        }
+        write!(f, "*\n")
     }
 }

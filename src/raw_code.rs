@@ -70,7 +70,7 @@ impl RawCode {
     }
 
     // used by Display trait to print the tree of elements
-    fn print_element(&self, e: &CodeItem, f: &mut fmt::Formatter, depth: u8, empty_spaces: &mut Vec<u8>) {
+    pub fn print_element(e: &CodeItem, f: &mut fmt::Formatter, depth: u8, empty_spaces: &mut Vec<u8>) {
         // indentation
         for i in 0..depth {
             let mut separator = "|";
@@ -108,7 +108,7 @@ impl RawCode {
                     let idx = empty_spaces.binary_search(&(depth+1));
                     match idx { Ok(_) => { empty_spaces.remove(idx.unwrap()); }, _ => {} };
                 }
-                self.print_element(&e.children[c], f, depth+1, empty_spaces);
+                RawCode::print_element(&e.children[c], f, depth+1, empty_spaces);
             }
 
             // reset space directory when topmost child is reached
@@ -121,10 +121,11 @@ impl RawCode {
 
 impl fmt::Display for RawCode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let _ = write!(f, "<raw data>\n");
         let _ = write!(f, "*\n");
         for e in 0..self.elements.len() {
             let mut empty_spaces = Vec::<u8>::new();
-            self.print_element(&self.elements[e], f, 0, &mut empty_spaces);
+            RawCode::print_element(&self.elements[e], f, 0, &mut empty_spaces);
         }
         write!(f, "*\n")
     }
