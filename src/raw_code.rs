@@ -123,9 +123,9 @@ impl fmt::Display for RawCode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let _ = write!(f, "<raw data>\n");
         let _ = write!(f, "*\n");
-        for e in 0..self.elements.len() {
+        for e in self.elements.iter() {
             let mut empty_spaces = Vec::<u8>::new();
-            RawCode::print_element(&self.elements[e], f, 0, &mut empty_spaces);
+            RawCode::print_element(e, f, 0, &mut empty_spaces);
         }
         write!(f, "*\n")
     }
