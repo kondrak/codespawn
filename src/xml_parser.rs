@@ -1,20 +1,26 @@
 extern crate xml;
 
+use std::error::Error;
 use std::fs::File;
 use std::io::BufReader;
+use std::path::Path;
 
 use self::xml::reader::{EventReader, XmlEvent};
 use self::xml::attribute::{OwnedAttribute};
-use raw_code::{RawCode, RawCodeItem, CodeConfig};
+use raw_code::{RawCode, CodeItem, CodeConfig};
 
 // fetched from XML (element name, attributes, depth in XML structure)
 type CodeData = (String, Vec<OwnedAttribute>, u8);
 
 pub fn process_xml(filename: &str) -> RawCode
 {
-    let file = File::open(filename).unwrap();
-    let file = BufReader::new(file);
+    let path = Path::new(&filename);
+    let file = match File::open(&path) {
+        Err(why) =>  panic!("Couldn't open {} for reading: {}", path.display(), why.description()),
+        Ok(file) => file
+    };
 
+    let file = BufReader::new(file);
     let parser = EventReader::new(file);
     let mut code_data = Vec::<CodeData>::new();
     let mut config_tags = Vec::<CodeData>::new();
@@ -47,7 +53,11 @@ pub fn process_xml(filename: &str) -> RawCode
         for c in config_tags.iter() {
             for a in c.1.iter() {
                 if a.name.local_name == "file" {
-                    let file = File::open(&a.value).unwrap();
+                    let path = Path::new(&a.value);
+                    let file = match File::open(&a.value) {
+                        Err(why) =>  panic!("Couldn't open {} for reading: {}", path.display(), why.description()),
+                        Ok(file) => file
+                    };
                     let file = BufReader::new(file);
                     let parser = EventReader::new(file);
 
@@ -109,10 +119,6 @@ fn generate_raw_data(data: &Vec<CodeData>, config_data: &Vec<CodeData>) -> RawCo
         }
     }
 
-    for c in raw_code.configs.iter() {
-        println!("{}", c.1);
-    }
-
     for i in data.iter() {
         let mut attribs = Vec::<(String, String)>::new();
 
@@ -122,7 +128,7 @@ fn generate_raw_data(data: &Vec<CodeData>, config_data: &Vec<CodeData>) -> RawCo
 
         // if at depth 0, it's a root element, so add it to the main list
         if i.2 == 0 {
-            raw_code.elements.push(RawCodeItem::new(&i.0, attribs));
+            raw_code.elements.push(CodeItem::new(&i.0, attribs));
         }
         else {
             let mut parent = raw_code.elements.last_mut().unwrap();
@@ -130,17 +136,15 @@ fn generate_raw_data(data: &Vec<CodeData>, config_data: &Vec<CodeData>) -> RawCo
         }
     }
 
-    println!("{}", raw_code);
-
     raw_code
 }
 
 // recursively process children of each code element
-fn process_kids(item: &mut RawCodeItem, depth: u8, name: &str, attribs: &Vec<(String, String)>) {
+fn process_kids(item: &mut CodeItem, depth: u8, name: &str, attribs: &Vec<(String, String)>) {
     if depth > 1 {
         process_kids(item.children.last_mut().unwrap(), depth-1, name, attribs);
     }
     else {
-        item.children.push(RawCodeItem::new(name, attribs.clone()));
+        item.children.push(CodeItem::new(name, attribs.clone()));
     }
 }

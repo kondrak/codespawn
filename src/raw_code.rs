@@ -1,18 +1,19 @@
 use std::fmt;
 use std::collections::HashMap;
+use fmt_code::{FormattedCode, Lang};
 
-pub struct RawCodeItem {
+pub struct CodeItem {
     pub name: String,
     pub attributes: Vec<(String, String)>,
-    pub children: Vec<RawCodeItem>
+    pub children: Vec<CodeItem>
 }
 
-impl RawCodeItem {
-    pub fn new(item_name: &str, item_attribs: Vec<(String, String)>) -> RawCodeItem {
-        RawCodeItem {
+impl CodeItem {
+    pub fn new(item_name: &str, item_attribs: Vec<(String, String)>) -> CodeItem {
+        CodeItem {
             name: String::from(item_name),
             attributes: item_attribs,
-            children: Vec::<RawCodeItem>::new()
+            children: Vec::<CodeItem>::new()
         }
     }
 }
@@ -35,29 +36,40 @@ impl CodeConfig {
 
 pub struct RawCode {
     pub configs: HashMap<String, CodeConfig>,
-    pub elements: Vec<RawCodeItem>
+    pub elements: Vec<CodeItem>,
+    supported_langs: HashMap<Lang, String>
 }
 
 impl RawCode {
     pub fn new() -> RawCode {
-        RawCode {
+        let mut rc = RawCode {
             configs: HashMap::<String, CodeConfig>::new(),
-            elements: Vec::<RawCodeItem>::new()
-        }
+            elements: Vec::<CodeItem>::new(),
+            supported_langs: HashMap::<Lang, String>::new()
+        };
+
+        rc.supported_langs.insert(Lang::Cpp, String::from("cpp"));
+        rc.supported_langs.insert(Lang::Rust, String::from("rust"));
+        
+        rc
     }
 
     // convert raw data to cpp code
-    pub fn to_cpp(&self) -> u8 {
-        0
+    pub fn to_cpp(&self) -> FormattedCode {
+        self.to_lang(Lang::Cpp)
+    }
+    // convert raw data to Rust code
+    pub fn to_rust(&self) -> FormattedCode {
+        self.to_lang(Lang::Rust)
     }
 
-    // convert raw data to Rust code
-    pub fn to_rust(&self) -> u8 {
-        0
+    fn to_lang(&self, lang: Lang) -> FormattedCode {
+        let lang_idx = self.supported_langs.get(&lang).unwrap();
+        FormattedCode::new(lang, self.configs.get(lang_idx), &self.elements)
     }
 
     // used by Display trait to print the tree of elements
-    fn print_element(&self, e: &RawCodeItem, f: &mut fmt::Formatter, depth: u8, empty_spaces: &mut Vec<u8>) {
+    fn print_element(&self, e: &CodeItem, f: &mut fmt::Formatter, depth: u8, empty_spaces: &mut Vec<u8>) {
         // indentation
         for i in 0..depth {
             let mut separator = "|";
@@ -132,7 +144,6 @@ impl fmt::Display for CodeConfig {
         for (k, v) in &self.type_dict {
             let _ = write!(f, "  {} = {}\n", k, v);
         }
-
         write!(f, "")
     }
 }
