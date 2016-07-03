@@ -2,6 +2,7 @@ use std::fmt;
 use std::collections::HashMap;
 use fmt_code::{FormattedCode, Lang};
 
+#[derive(Clone)]
 pub struct CodeItem {
     pub name: String,
     pub attributes: Vec<(String, String)>,
@@ -65,7 +66,7 @@ impl RawCode {
 
     fn to_lang(&self, lang: Lang) -> FormattedCode {
         let lang_idx = self.supported_langs.get(&lang).unwrap();
-        FormattedCode::new(lang, self.configs.get(lang_idx), &self.elements)
+        FormattedCode::new(lang, &self.configs.get(lang_idx), &self.elements)
     }
 
     // used by Display trait to print the tree of elements

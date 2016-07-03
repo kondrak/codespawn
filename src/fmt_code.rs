@@ -17,19 +17,45 @@ pub struct FormattedCode {
 }
 
 impl FormattedCode {
-    pub fn new(lang: Lang, cfg: Option<&CodeConfig>, data: &Vec<CodeItem>) -> FormattedCode {
+    pub fn new(lang: Lang, cfg: &Option<&CodeConfig>, data: &Vec<CodeItem>) -> FormattedCode {
         let mut fmt_code = FormattedCode {
             language: lang,
-            elements: Vec::<CodeItem>::new(),
+            elements: data.to_vec(),
         };
 
-        // todo: populate elements with data using cfg as reference
+        match *cfg {
+            Some(config) => {
+                // replace types and names using data from config file
+                fmt_code.process_config(&config);
+            },
+            None => {}
+        };
+
         fmt_code
     }
 
-    // generate a string with output code
-    pub fn to_string(&self) -> String {
-        String::from("Generated code\nTODO")
+    fn process_config(&mut self, config: &CodeConfig) {
+        for (k, v) in config.type_dict.iter() {
+            for e in self.elements.iter_mut() {
+                FormattedCode::update_element(e, &k, &v);
+            }
+        }
+        for (k, v) in config.name_dict.iter() {
+            for e in self.elements.iter_mut() {
+                FormattedCode::update_element(e, &k, &v);
+            }
+        }
+    }
+
+    fn update_element(e: &mut CodeItem, key: &String, value: &String) {
+        for child in e.children.iter_mut() {
+            FormattedCode::update_element(child, key, value);
+        }
+        for a in e.attributes.iter_mut() {
+            if a.1 == *key {
+                a.1 = value.clone();
+            }
+        }
     }
 
     // save generated code (formatted as string) to file
@@ -42,5 +68,10 @@ impl FormattedCode {
         };
 
         file.write_all(code.as_bytes())
+    }
+
+    // generate a string with output code
+    pub fn to_string(&self) -> String {
+        String::from("Generated code\nTODO")
     }
 }
