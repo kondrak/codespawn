@@ -71,55 +71,6 @@ impl RawCode {
         let lang_idx = self.supported_langs.get(&lang).unwrap();
         FormattedCode::new(lang, &self.configs.get(lang_idx), &self.elements)
     }
-
-    // used by Display trait to print the tree of elements
-    pub fn print_element(e: &CodeItem, f: &mut fmt::Formatter, depth: u8, empty_spaces: &mut Vec<u8>) {
-        // indentation
-        for i in 0..depth {
-            let mut separator = "|";
-            for j in empty_spaces.iter() {
-                if i == *j {
-                    separator = " ";
-                    break;
-                }
-            }
-            let _ = write!(f, "{}  ", separator);
-        }
-
-        let _ = write!(f, "|--{}", e.name);
-        // print attributes
-        if e.attributes.len() > 0 {
-            let _ = write!(f, " [");
-            for a in 0..e.attributes.len() {
-                if a > 0 && a < e.attributes.len() {
-                    let _ = write!(f, ", ");
-                }
-                let _ = write!(f, "{}:\"{}\"", e.attributes[a].0, e.attributes[a].1);
-            }
-            let _ = write!(f, "]");
-        }
-        let _ = write!(f, "\n");
-
-        // child processing
-        if e.children.len() > 0 {
-            for c in 0..e.children.len() {
-                if (e.children.len() - c) == 1 {
-                    empty_spaces.push(depth+1);
-                }
-                else {
-                    empty_spaces.sort();
-                    let idx = empty_spaces.binary_search(&(depth+1));
-                    match idx { Ok(_) => { empty_spaces.remove(idx.unwrap()); }, _ => {} };
-                }
-                RawCode::print_element(&e.children[c], f, depth+1, empty_spaces);
-            }
-
-            // reset space directory when topmost child is reached
-            if depth == 1 {
-                empty_spaces.clear();
-            }
-        }
-    }
 }
 
 impl fmt::Display for RawCode {
@@ -128,7 +79,7 @@ impl fmt::Display for RawCode {
         let _ = write!(f, "*\n");
         for e in self.elements.iter() {
             let mut empty_spaces = Vec::<u8>::new();
-            RawCode::print_element(e, f, 0, &mut empty_spaces);
+            print_code_item(e, f, 0, &mut empty_spaces);
         }
         write!(f, "*\n")
     }
@@ -150,6 +101,55 @@ impl fmt::Display for CodeConfig {
             let _ = write!(f, "  {} = {}\n", k, v);
         }
         write!(f, "")
+    }
+}
+
+// used by Display trait to print the tree of elements
+pub fn print_code_item(e: &CodeItem, f: &mut fmt::Formatter, depth: u8, empty_spaces: &mut Vec<u8>) {
+    // indentation
+    for i in 0..depth {
+        let mut separator = "|";
+        for j in empty_spaces.iter() {
+            if i == *j {
+                separator = " ";
+                break;
+            }
+        }
+        let _ = write!(f, "{}  ", separator);
+    }
+
+    let _ = write!(f, "|--{}", e.name);
+    // print attributes
+    if e.attributes.len() > 0 {
+        let _ = write!(f, " [");
+        for a in 0..e.attributes.len() {
+            if a > 0 && a < e.attributes.len() {
+                let _ = write!(f, ", ");
+            }
+            let _ = write!(f, "{}:\"{}\"", e.attributes[a].0, e.attributes[a].1);
+        }
+        let _ = write!(f, "]");
+    }
+    let _ = write!(f, "\n");
+
+    // child processing
+    if e.children.len() > 0 {
+        for c in 0..e.children.len() {
+            if (e.children.len() - c) == 1 {
+                empty_spaces.push(depth+1);
+            }
+            else {
+                empty_spaces.sort();
+                let idx = empty_spaces.binary_search(&(depth+1));
+                match idx { Ok(_) => { empty_spaces.remove(idx.unwrap()); }, _ => {} };
+            }
+            print_code_item(&e.children[c], f, depth+1, empty_spaces);
+        }
+
+        // reset space directory when topmost child is reached
+        if depth == 1 {
+            empty_spaces.clear();
+        }
     }
 }
 

@@ -4,7 +4,7 @@ use std::error::Error;
 use std::io;
 use std::io::prelude::*;
 use std::path::Path;
-use raw_code::{CodeItem, CodeConfig, RawCode};
+use raw_code::{CodeItem, CodeConfig, print_code_item};
 
 #[derive(PartialEq, Eq, Hash)]
 pub enum Lang {
@@ -92,7 +92,7 @@ impl fmt::Display for FormattedCode {
         let _ = write!(f, "*\n");
         for e in self.elements.iter() {
             let mut empty_spaces = Vec::<u8>::new();
-            RawCode::print_element(e, f, 0, &mut empty_spaces);
+            print_code_item(e, f, 0, &mut empty_spaces);
         }
         write!(f, "*\n")
     }
