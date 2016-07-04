@@ -1,6 +1,7 @@
 mod xml_parser;
 mod raw_code;
 mod fmt_code;
+mod string_gen;
 
 use raw_code::{RawCode};
 

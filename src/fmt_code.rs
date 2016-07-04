@@ -5,6 +5,7 @@ use std::io;
 use std::io::prelude::*;
 use std::path::Path;
 use raw_code::{CodeItem, CodeConfig, print_code_item};
+use string_gen::{code_to_str};
 
 #[derive(PartialEq, Eq, Hash)]
 pub enum Lang {
@@ -73,7 +74,7 @@ impl FormattedCode {
 
     // generate a string with output code
     pub fn to_string(&self) -> String {
-        String::from("Generated code\nTODO")
+        code_to_str(self)
     }
 }
 
