@@ -1,6 +1,12 @@
-use fmt_code::{FormattedCode};
+use fmt_code::{FormattedCode, Lang};
+mod cpp;
+mod rust;
+use self::cpp::convert as convert_cpp;
+use self::rust::convert as convert_rust;
 
 pub fn code_to_str(fmt_code: &FormattedCode) -> String {
-    // use correct formatter depending on fmt_code.language
-    String::from("code as string")
+    match fmt_code.language {
+        Lang::Cpp  => convert_cpp(&fmt_code.elements),
+        Lang::Rust => convert_rust(&fmt_code.elements),
+    }
 }
