@@ -2,6 +2,9 @@ use std::fmt;
 use std::collections::HashMap;
 use fmt_code::{FormattedCode, Lang};
 
+// (element name, attributes (Vec<name, value>), depth in API file structure)
+pub type CodeData = (String, Vec<(String, String)>, u8);
+
 #[derive(Clone)]
 pub struct CodeItem {
     pub name: String,
@@ -148,4 +151,60 @@ impl fmt::Display for CodeConfig {
         }
         write!(f, "")
     }
+}
+
+// create RawCode element from pre-parsed data
+pub fn generate_raw(data: &Vec<CodeData>, config_data: &Vec<CodeData>) -> RawCode {
+    let mut raw_code = RawCode::new();
+
+    for i in config_data.iter() {
+        if !raw_code.configs.contains_key(&i.0) {
+            raw_code.configs.insert(i.0.clone(), CodeConfig::new(&i.0));
+        }
+
+        let mut n = String::new();
+        let mut t = String::new();
+        let mut v = String::new();
+        // process all config attributes
+        for j in i.1.iter() {
+            if j.0 == "name" {
+                n = j.1.clone();
+                continue;
+            }
+            if j.0 == "type" {
+                t = j.1.clone();
+                continue;
+            }
+            if j.0 == "value" {
+                v = j.1.clone();
+                continue;
+            }
+        }
+
+        if n.len() > 0 {
+            assert!(raw_code.configs.get_mut(&i.0).unwrap().name_dict.insert(n.clone(), v.clone()) == None, "Name \"{}\" already defined in config! (duplicate: {}={})", n, n, v);
+        }
+        if t.len() > 0 {
+            assert!(raw_code.configs.get_mut(&i.0).unwrap().type_dict.insert(t.clone(), v.clone()) == None, "Type \"{}\" already defined in config! (duplicate: {}={}", t, t, v);
+        }
+    }
+
+    for i in data.iter() {
+        // if at depth 0, it's a root element, so add it to the main list
+        if i.2 == 0 {
+            raw_code.elements.push(CodeItem::new(&i.0, i.1.clone()));
+        }
+        else {
+            // recursively process children of a code element
+            fn process_kids(item: &mut CodeItem, depth: u8, name: &str, attribs: &Vec<(String, String)>) {
+                if depth > 1 { process_kids(item.children.last_mut().unwrap(), depth-1, name, attribs); }
+                else         { item.children.push(CodeItem::new(name, attribs.clone())); }
+            }
+
+            let mut parent = raw_code.elements.last_mut().unwrap();
+            process_kids(parent, i.2, &i.0, &i.1);
+        }
+    }
+
+    raw_code
 }
