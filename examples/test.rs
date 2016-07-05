@@ -10,6 +10,7 @@ fn main()
     let cpp_code  = raw_code.to_cpp();
     let rust_code = raw_code.to_rust();
     println!("{}", rust_code);
+    println!("{}", cpp_code.to_string());
     //code_data.to_cpp().to_file("sample.cpp");
     //code_data.to_rust().to_file("sample.rs");
 }
