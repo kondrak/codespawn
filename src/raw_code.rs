@@ -1,6 +1,7 @@
 use std::fmt;
 use std::collections::HashMap;
 use fmt_code::{FormattedCode, Lang};
+use string_gen::keywords::{NAME, TYPE, VALUE};
 
 // (element name, attributes (Vec<name, value>), depth in API file structure)
 pub type CodeData = (String, Vec<(String, String)>, u8);
@@ -167,15 +168,15 @@ pub fn generate_raw(data: &Vec<CodeData>, config_data: &Vec<CodeData>) -> RawCod
         let mut v = String::new();
         // process all config attributes
         for j in i.1.iter() {
-            if j.0 == "name" {
+            if j.0 == NAME {
                 n = j.1.clone();
                 continue;
             }
-            if j.0 == "type" {
+            if j.0 == TYPE {
                 t = j.1.clone();
                 continue;
             }
-            if j.0 == "value" {
+            if j.0 == VALUE {
                 v = j.1.clone();
                 continue;
             }

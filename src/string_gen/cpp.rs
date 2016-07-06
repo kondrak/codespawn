@@ -1,4 +1,5 @@
 use raw_code::{CodeItem};
+use string_gen::keywords::*;
 
 pub fn convert(code_items: &Vec<CodeItem>) -> String {
     let mut code_str = String::from("");
@@ -11,10 +12,10 @@ pub fn convert(code_items: &Vec<CodeItem>) -> String {
 
 fn parse_item(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
     match e.name.as_ref() {
-        "enum"   => make_enum(e, depth, num_tabs, tab_char),
-        "var"    => make_variable(e, depth, num_tabs, tab_char),
-        "func"   => make_function(e, depth, num_tabs, tab_char),
-        "struct" => make_struct(e, depth, num_tabs, tab_char),
+        ENUM   => make_enum(e, depth, num_tabs, tab_char),
+        VAR    => make_variable(e, depth, num_tabs, tab_char),
+        FUNC   => make_function(e, depth, num_tabs, tab_char),
+        STRUCT => make_struct(e, depth, num_tabs, tab_char),
         _ => String::from(""),
     }
 }
@@ -33,7 +34,7 @@ fn make_enum(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
     let mut e_name = String::from("");
     for a in e.attributes.iter() {
         match a.0.as_ref() {
-            "name"  => e_name = format!(" {}", a.1),
+            NAME  => e_name = format!(" {}", a.1),
             _ => {}
         }
     }
@@ -42,13 +43,13 @@ fn make_enum(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
 
     for c in e.children.iter() {
         match c.name.as_ref() {
-            "var" => {
+            VAR => {
                 let mut n = String::from("");
                 let mut v = String::from("");
                 for a in c.attributes.iter() {
                     match a.0.as_ref() {
-                        "name"  => n = format!("{}", a.1),
-                        "value" => v = format!("{}", a.1),
+                        NAME  => n = format!("{}", a.1),
+                        VALUE => v = format!("{}", a.1),
                         _ => {}
                     };
                 }
@@ -78,9 +79,9 @@ fn make_variable(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> Strin
     let mut v = String::from("");
     for a in e.attributes.iter() {
         match a.0.as_ref() {
-            "name"  => n = format!("{}", a.1),
-            "type"  => t = format!("{}", a.1),
-            "value" => v = format!(" = {}", a.1),
+            NAME  => n = format!("{}", a.1),
+            TYPE  => t = format!("{}", a.1),
+            VALUE => v = format!(" = {}", a.1),
             _ => {}
         }
     }
@@ -98,8 +99,8 @@ fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> Strin
     let mut f_type = String::from("");
     for a in e.attributes.iter() {
         match a.0.as_ref() {
-            "name"  => f_name = format!(" {}", a.1),
-            "type"  => f_type = format!("{}", a.1),
+            NAME  => f_name = format!(" {}", a.1),
+            TYPE  => f_type = format!("{}", a.1),
             _ => {}
         }
     }
@@ -110,15 +111,15 @@ fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> Strin
     
     for c in e.children.iter() {
         match c.name.as_ref() {
-            "var" => {
+            VAR => {
                 let mut n = String::from("");
                 let mut t = String::from("");
                 let mut v = String::from("");
                 for a in c.attributes.iter() {
                     match a.0.as_ref() {
-                        "name"  => n = format!(" {}", a.1),
-                        "type"  => t = format!("{}{}", if comma && !first_arg { ", " } else { "" }, a.1),
-                        "value" => v = format!(" = {}", a.1),
+                        NAME  => n = format!(" {}", a.1),
+                        TYPE  => t = format!("{}{}", if comma && !first_arg { ", " } else { "" }, a.1),
+                        VALUE => v = format!(" = {}", a.1),
                         _ => {}
                     };
                 }
@@ -147,7 +148,7 @@ fn make_struct(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String 
     let mut s_name = String::from("");
     for a in e.attributes.iter() {
         match a.0.as_ref() {
-            "name"  => s_name = format!(" {}", a.1),
+            NAME => s_name = format!(" {}", a.1),
             _ => {}
         }
     }    

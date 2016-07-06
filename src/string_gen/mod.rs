@@ -1,4 +1,5 @@
 use fmt_code::{FormattedCode, Lang};
+pub mod keywords;
 mod cpp;
 mod rust;
 use self::cpp::convert as convert_cpp;
