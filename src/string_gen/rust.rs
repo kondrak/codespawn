@@ -34,7 +34,7 @@ fn make_enum(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
     let mut e_name = String::from("");
     for a in e.attributes.iter() {
         match a.0.as_ref() {
-            NAME  => e_name = format!(" {}", a.1),
+            NAME  => if !a.1.is_empty() { e_name = format!(" {}", a.1) },
             _ => {}
         }
     }
@@ -46,10 +46,12 @@ fn make_enum(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
             VAR => {
                 let mut n = String::from("");
                 let mut v = String::from("");
+                let mut t = String::from("");
                 for a in c.attributes.iter() {
                     match a.0.as_ref() {
                         NAME  => n = format!("{}", a.1),
                         VALUE => v = format!("{}", a.1),
+                        TYPE  => if !a.1.is_empty() { t = format!(" as {}", a.1) },
                         _ => {}
                     };
                 }
@@ -57,7 +59,7 @@ fn make_enum(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
                     enum_str.push_str(format!("{}{},\n", spaces_str, n).as_str());
                 }
                 else {
-                    enum_str.push_str(format!("{}{} = {},\n", spaces_str, n, v).as_str());
+                    enum_str.push_str(format!("{}{} = {}{},\n", spaces_str, n, v, t).as_str());
                 }
             },
             _ => panic!("Illegal enum child: {}", c.name),
@@ -77,11 +79,13 @@ fn make_variable(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_v
     let mut n = String::from("");
     let mut t = String::from("");
     let mut v = String::from("");
+    let mut q = String::from("const"); // default qualifier for non-struct variable
     for a in e.attributes.iter() {
         match a.0.as_ref() {
             NAME  => n = format!("{}", a.1),
             TYPE  => t = format!("{}", a.1),
-            VALUE => v = format!(" = {}", a.1),
+            VALUE => if !a.1.is_empty() { v = format!(" = {}", a.1) },
+            QUALIFIER => q = format!("{}", a.1),
             _ => {}
         }
     }
@@ -90,7 +94,7 @@ fn make_variable(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_v
         format!("{}pub {}: {}{},\n", start_indent, n, t, v)
     }
     else {
-        format!("{}pub const {}: {}{};\n", start_indent, n, t, v)
+        format!("{}pub {} {}: {}{};\n", start_indent, q, n, t, v)
     }
 }
 
@@ -102,15 +106,17 @@ fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_f
 
     let mut f_name = String::from("");
     let mut f_type = String::from("");
+    let mut f_qual = String::from("");
     for a in e.attributes.iter() {
         match a.0.as_ref() {
             NAME  => f_name = format!("{}", a.1),
             TYPE  => f_type = format!("{}", a.1),
+            QUALIFIER => if !a.1.is_empty() { f_qual = format!("{} ", a.1) },
             _ => {}
         }
     }
 
-    let mut func_str = format!("{}pub {}: fn(", start_indent, f_name);
+    let mut func_str = format!("{}pub {}: {}fn(", start_indent, f_name, f_qual);
     let comma = e.children.len() > 1;
     let mut first_arg = true;
 
@@ -121,7 +127,7 @@ fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_f
                 let mut t = String::from("");
                 for a in c.attributes.iter() {
                     match a.0.as_ref() {
-                        NAME  => n = format!("{}: ", a.1),
+                        NAME  => if !a.1.is_empty() { n = format!("{}: ", a.1) },
                         TYPE  => t = format!("{}", a.1),
                         _ => {}
                     };
@@ -137,13 +143,7 @@ fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_f
     func_str.push_str(format!("){}{}\n", ret_type, if struct_func { "," } else { ";" }).as_str());
 
     // ignore function pointers
-    if !f_name.is_empty() {
-        func_str
-    }
-    else
-    {
-        String::from("")
-    }
+    if !f_name.is_empty() { func_str } else { String::from("") }
 }
 
 fn make_struct(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
@@ -160,7 +160,7 @@ fn make_struct(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String 
     let mut s_name = String::from("");
     for a in e.attributes.iter() {
         match a.0.as_ref() {
-            NAME => s_name = format!(" {}", a.1),
+            NAME => if !a.1.is_empty() { s_name = format!(" {}", a.1) },
             _ => {}
         }
     }
