@@ -8,4 +8,5 @@ pub const STRUCT: &'static str = "struct";
 pub const  NAME: &'static str = "name";
 pub const  TYPE: &'static str = "type";
 pub const VALUE: &'static str = "value";
+pub const ATTRIBUTE: &'static str = "attribute";
 pub const QUALIFIER: &'static str = "qualifier";

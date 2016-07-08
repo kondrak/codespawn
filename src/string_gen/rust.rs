@@ -4,7 +4,7 @@ use string_gen::keywords::*;
 pub fn convert(code_items: &Vec<CodeItem>) -> String {
     let mut code_str = String::from("");
     for i in code_items.iter() {
-        code_str = format!("{}{}", code_str, parse_item(i, 0, 2, ' ', false));
+        code_str = format!("{}{}", code_str, parse_item(i, 0, 4, ' ', false));
     }
 
     code_str
@@ -32,14 +32,16 @@ fn make_enum(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
     }
 
     let mut e_name = String::from("");
+    let mut e_attr = String::from("");
     for a in e.attributes.iter() {
         match a.0.as_ref() {
             NAME  => if !a.1.is_empty() { e_name = format!(" {}", a.1) },
+            ATTRIBUTE => if !a.1.is_empty() { e_attr = format!("{}{}\n", start_indent, a.1) },
             _ => {}
         }
     }
 
-    let mut enum_str = format!("{}pub enum{}{}", start_indent, e_name, " {\n");
+    let mut enum_str = format!("{}{}pub enum{}{}", e_attr, start_indent, e_name, " {\n");
 
     for c in e.children.iter() {
         match c.name.as_ref() {
@@ -158,14 +160,16 @@ fn make_struct(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String 
     }
 
     let mut s_name = String::from("");
+    let mut s_attr = String::from("");
     for a in e.attributes.iter() {
         match a.0.as_ref() {
             NAME => if !a.1.is_empty() { s_name = format!(" {}", a.1) },
+            ATTRIBUTE => if !a.1.is_empty() { s_attr = format!("{}{}\n", start_indent, a.1) },
             _ => {}
         }
     }
 
-    let mut struct_str = format!("{}pub struct{}{}", start_indent, s_name, " {\n");
+    let mut struct_str = format!("{}{}pub struct{}{}", s_attr, start_indent, s_name, " {\n");
 
     for c in e.children.iter() {
         struct_str.push_str(parse_item(c, depth+1, num_tabs, tab_char, true).as_str());
