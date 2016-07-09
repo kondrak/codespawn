@@ -48,32 +48,30 @@ pub fn process_xml(filename: &str) -> RawCode {
     }
 
     // process configs, if found
-    if config_tags.len() > 0 {
-        for c in config_tags.iter() {
-            for a in c.1.iter() {
-                if a.0 == "file" {
-                    let path = Path::new(&a.1);
-                    let file = match File::open(&path) {
-                        Err(why) =>  panic!("Couldn't open {} for reading: {}", path.display(), why.description()),
-                        Ok(file) => file
-                    };
-                    let file = BufReader::new(file);
-                    let parser = EventReader::new(file);
+    for c in config_tags.iter() {
+        for a in c.1.iter() {
+            if a.0 == "file" {
+                let path = Path::new(&a.1);
+                let file = match File::open(&path) {
+                    Err(why) =>  panic!("Couldn't open {} for reading: {}", path.display(), why.description()),
+                    Ok(file) => file
+                };
+                let file = BufReader::new(file);
+                let parser = EventReader::new(file);
 
-                    for e in parser {
-                        match e {
-                            Ok(XmlEvent::StartElement { name, attributes, .. }) => {
-                                let mut attribs = Vec::<(String, String)>::new();
-                                for a in attributes.iter() {
-                                    attribs.push((a.name.local_name.clone(), a.value.clone()));
-                                }
-                                config_data.push((name.local_name, attribs, 0));
+                for e in parser {
+                    match e {
+                        Ok(XmlEvent::StartElement { name, attributes, .. }) => {
+                            let mut attribs = Vec::<(String, String)>::new();
+                            for a in attributes.iter() {
+                                attribs.push((a.name.local_name.clone(), a.value.clone()));
                             }
-                            Err(e) => {
-                                println!("Error parsing {}: {}", a.1, e);
-                            }
-                            _ => {}
+                            config_data.push((name.local_name, attribs, 0));
                         }
+                        Err(e) => {
+                            println!("Error parsing {}: {}", a.1, e);
+                        }
+                        _ => {}
                     }
                 }
             }

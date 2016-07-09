@@ -1,0 +1,14 @@
+{
+    "rust": [
+      { "type": "int", "value": "c_int" },
+      { "type": "float", "value": "c_float" },
+      { "type": "void", "value": "c_void" },
+      { "type": "char", "value": "c_char" },
+      { "type": "int*", "value": "*mut c_int" },
+      { "type": "float*", "value": "*mut c_float" },
+      { "type": "void*", "value": "*mut c_void" },
+      { "type": "const float*", "value": "*const c_float" },
+      { "type": "const char*", "value": "*const c_char" },
+      { "name": "Foo", "value": "CFoo" }
+    ]
+}
