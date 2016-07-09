@@ -8,8 +8,7 @@ use std::path::Path;
 use self::xml::reader::{EventReader, XmlEvent};
 use raw_code::{RawCode, CodeData, generate_raw};
 
-pub fn process_xml(filename: &str) -> RawCode
-{
+pub fn process_xml(filename: &str) -> RawCode {
     let path = Path::new(&filename);
     let file = match File::open(&path) {
         Err(why) =>  panic!("Couldn't open {} for reading: {}", path.display(), why.description()),

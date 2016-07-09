@@ -1,0 +1,36 @@
+{
+    "config": { "file": "examples/rust.json" },
+    "enum": {
+      "name": "FooEnum",
+      "var": [
+        { "name": "EnumVal1" },
+        { "name": "EnumVal2" },
+        { "name": "EnumVal3" },
+        { "name": "Count", "value": "3" }
+      ]
+    },
+    "struct": {
+      "name": "Foo",
+      "var": [
+        { "type": "int", "name": "x" },
+        { "type": "int", "name": "y" }
+      ],
+      "func": [
+        {
+          "type": "char",
+          "name": "return_arg",
+          "var": {
+            "type": "char",
+            "name": "arg"
+          }
+        },
+        {
+          "type": "void (*sample_ptr)",
+          "var": [
+            { "type": "const char*", "name": "fmt" },
+            { "type": "..." }
+          ]
+        }
+      ]
+    }
+}
