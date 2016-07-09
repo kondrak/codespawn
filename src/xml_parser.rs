@@ -6,6 +6,7 @@ use std::io::BufReader;
 use std::path::Path;
 
 use self::xml::reader::{EventReader, XmlEvent};
+use string_gen::keywords::*;
 use raw_code::{RawCode, CodeData, generate_raw};
 
 pub fn process_xml(filename: &str) -> RawCode {
@@ -29,7 +30,7 @@ pub fn process_xml(filename: &str) -> RawCode {
                 for a in attributes.iter() {
                     attribs.push((a.name.local_name.clone(), a.value.clone()));
                 }
-                if name.local_name == "config" {
+                if name.local_name == CONFIG {
                     config_tags.push((name.local_name, attribs, depth));
                 }
                 else {
@@ -50,7 +51,7 @@ pub fn process_xml(filename: &str) -> RawCode {
     // process configs, if found
     for c in config_tags.iter() {
         for a in c.1.iter() {
-            if a.0 == "file" {
+            if a.0 == FILE {
                 let path = Path::new(&a.1);
                 let file = match File::open(&path) {
                     Err(why) =>  panic!("Couldn't open {} for reading: {}", path.display(), why.description()),

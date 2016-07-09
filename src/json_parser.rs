@@ -5,6 +5,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
+use string_gen::keywords::*;
 use raw_code::{RawCode, CodeData, generate_raw};
 
 pub fn process_json(filename: &str) -> RawCode {
@@ -22,7 +23,7 @@ pub fn process_json(filename: &str) -> RawCode {
 
     let parsed_json = json::parse(json_data.as_str()).unwrap();
     for i in parsed_json.entries() {
-        if i.0 == "config" {
+        if i.0 == CONFIG {
             process(&i, &mut config_tags, 0);
         }
         else {
@@ -33,7 +34,7 @@ pub fn process_json(filename: &str) -> RawCode {
     // process configs, if found
     for c in config_tags.iter() {
         for a in c.1.iter() {
-            if a.0 == "file" {
+            if a.0 == FILE {
                 let path = Path::new(&a.1);
                 let mut file = match File::open(&path) {
                     Err(why) =>  panic!("Couldn't open {} for reading: {}", path.display(), why.description()),
