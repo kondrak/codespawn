@@ -2,24 +2,31 @@ extern crate json;
 
 use std::error::Error;
 use std::fs::File;
+use std::io;
+use std::io::Error as IoError;
+use std::io::ErrorKind::Other as ReadError;
 use std::io::prelude::*;
 use std::path::Path;
 
 use string_gen::keywords::*;
 use raw_code::{RawCode, CodeData, generate_raw};
 
-pub fn process_json(filename: &str) -> RawCode {
+pub fn process_json(filename: &str) -> io::Result<RawCode> {
     let path = Path::new(&filename);
     let mut file = match File::open(&path) {
-        Err(why) =>  panic!("Couldn't open {} for reading: {}", path.display(), why.description()),
-        Ok(file) => file
+        Ok(file) => file,
+        Err(why) => {
+            return Err(IoError::new(ReadError, format!("Failed to open {} for reading: {}",
+                                                       path.display(), why.description())));
+        }
     };
 
     let mut json_data = String::new();
     let mut code_data   = Vec::<CodeData>::new();
     let mut config_tags = Vec::<CodeData>::new();
     let mut config_data = Vec::<CodeData>::new();
-    let _ = file.read_to_string(&mut json_data);
+
+    try!(file.read_to_string(&mut json_data));
 
     let parsed_json = json::parse(json_data.as_str()).unwrap();
     for i in parsed_json.entries() {
@@ -37,11 +44,14 @@ pub fn process_json(filename: &str) -> RawCode {
             if a.0 == FILE {
                 let path = Path::new(&a.1);
                 let mut file = match File::open(&path) {
-                    Err(why) =>  panic!("Couldn't open {} for reading: {}", path.display(), why.description()),
-                    Ok(file) => file
+                    Ok(file) => file,
+                    Err(why) => {
+                        return Err(IoError::new(ReadError,format!("Failed to open {} for reading: {}",
+                                                                  path.display(), why.description())));
+                    }
                 };
-                json_data = String::new();
-                let _ = file.read_to_string(&mut json_data);
+                json_data.clear();
+                try!(file.read_to_string(&mut json_data));
 
                 let parsed_json = json::parse(json_data.as_str()).unwrap();
                 for i in parsed_json.entries() {
@@ -51,7 +61,7 @@ pub fn process_json(filename: &str) -> RawCode {
         }
     }
 
-    generate_raw(&code_data, &config_data)
+    Ok(generate_raw(&code_data, &config_data))
 }
 
 fn process(json: &(&String, &json::JsonValue), data: &mut Vec<CodeData>, depth: u8) {

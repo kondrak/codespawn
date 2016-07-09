@@ -2,7 +2,7 @@ extern crate codespawn;
 
 fn main()
 {
-    let raw_code = codespawn::from_xml("examples/sample.xml");
+    let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
     for c in raw_code.configs.iter() {
         println!("{}", c.1);
     }

@@ -2,6 +2,9 @@ extern crate xml;
 
 use std::error::Error;
 use std::fs::File;
+use std::io;
+use std::io::Error as IoError;
+use std::io::ErrorKind::Other as ReadError;
 use std::io::BufReader;
 use std::path::Path;
 
@@ -9,11 +12,14 @@ use self::xml::reader::{EventReader, XmlEvent};
 use string_gen::keywords::*;
 use raw_code::{RawCode, CodeData, generate_raw};
 
-pub fn process_xml(filename: &str) -> RawCode {
+pub fn process_xml(filename: &str) -> io::Result<RawCode> {
     let path = Path::new(&filename);
     let file = match File::open(&path) {
-        Err(why) =>  panic!("Couldn't open {} for reading: {}", path.display(), why.description()),
-        Ok(file) => file
+        Ok(file) => file,
+        Err(why) => {
+            return Err(IoError::new(ReadError, format!("Failed to open {} for reading: {}",
+                                                      path.display(), why.description())));
+        }
     };
 
     let file = BufReader::new(file);
@@ -41,8 +47,9 @@ pub fn process_xml(filename: &str) -> RawCode {
             Ok(XmlEvent::EndElement { .. }) => {
                 depth -= 1;
             }
-            Err(e) => {
-                println!("Error parsing {}: {}", filename, e);
+            Err(why) => {
+                return Err(IoError::new(ReadError, format!("Error parsing {}: {}",
+                                                           filename, why.description())));
             }
             _ => {}
         }
@@ -54,12 +61,15 @@ pub fn process_xml(filename: &str) -> RawCode {
             if a.0 == FILE {
                 let path = Path::new(&a.1);
                 let file = match File::open(&path) {
-                    Err(why) =>  panic!("Couldn't open {} for reading: {}", path.display(), why.description()),
-                    Ok(file) => file
+                    Ok(file) => file,
+                    Err(why) => {
+                        return Err(IoError::new(ReadError, format!("Failed to open {} for reading: {}",
+                                                                   path.display(), why.description())));
+                    }
                 };
+
                 let file = BufReader::new(file);
                 let parser = EventReader::new(file);
-
                 for e in parser {
                     match e {
                         Ok(XmlEvent::StartElement { name, attributes, .. }) => {
@@ -69,8 +79,9 @@ pub fn process_xml(filename: &str) -> RawCode {
                             }
                             config_data.push((name.local_name, attribs, 0));
                         }
-                        Err(e) => {
-                            println!("Error parsing {}: {}", a.1, e);
+                        Err(why) => {
+                            return Err(IoError::new(ReadError, format!("Error parsing {}: {}",
+                                                                       a.1, why.description())));
                         }
                         _ => {}
                     }
@@ -79,5 +90,5 @@ pub fn process_xml(filename: &str) -> RawCode {
         }
     }
 
-    generate_raw(&code_data, &config_data)
+    Ok(generate_raw(&code_data, &config_data))
 }
