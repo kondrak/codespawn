@@ -1,10 +1,10 @@
 use raw_code::{CodeItem};
 use string_gen::keywords::*;
 
-pub fn convert(code_items: &Vec<CodeItem>) -> String {
+pub fn convert(code_items: &Vec<CodeItem>, num_tabs: u8, tab_char: char) -> String {
     let mut code_str = String::from("");
     for i in code_items.iter() {
-        code_str = format!("{}{}", code_str, parse_item(i, 0, 4, ' '));
+        code_str = format!("{}{}", code_str, parse_item(i, 0, num_tabs, tab_char));
     }
 
     code_str

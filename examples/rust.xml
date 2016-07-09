@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
+<rust num_tabs="4" tab_char=" " />
 <!-- declare type names for Rust -->
 <rust type="int" value="c_int" />
 <rust type="float" value="c_float" />

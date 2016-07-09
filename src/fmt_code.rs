@@ -5,6 +5,7 @@ use std::io;
 use std::io::prelude::*;
 use std::path::Path;
 use raw_code::{CodeItem, CodeConfig, print_code_item};
+use string_gen::keywords::*;
 use string_gen::{code_to_str};
 
 #[derive(PartialEq, Eq, Hash)]
@@ -16,6 +17,8 @@ pub enum Lang {
 pub struct FormattedCode {
     pub language: Lang,
     pub elements: Vec<CodeItem>,
+    pub num_tabs: u8,
+    pub tab_char: char,
 }
 
 impl FormattedCode {
@@ -23,6 +26,8 @@ impl FormattedCode {
         let mut fmt_code = FormattedCode {
             language: lang,
             elements: data.to_vec(),
+            num_tabs: 4,
+            tab_char: ' '
         };
 
         match *cfg {
@@ -45,6 +50,13 @@ impl FormattedCode {
         for (k, v) in config.name_dict.iter() {
             for e in self.elements.iter_mut() {
                 FormattedCode::update_element(e, &k, &v);
+            }
+        }
+        for (k, v) in config.global_cfg.iter() {
+            match k.as_str() {
+                NUM_TABS => self.num_tabs = v.parse::<u8>().unwrap(),
+                TAB_CHAR => self.tab_char = v.chars().next().unwrap(),
+                _ => {}
             }
         }
     }

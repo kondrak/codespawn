@@ -26,7 +26,8 @@ impl CodeItem {
 pub struct CodeConfig {
     pub name: String,
     pub type_dict: HashMap<String, String>,
-    pub name_dict: HashMap<String, String>
+    pub name_dict: HashMap<String, String>,
+    pub global_cfg: HashMap<String, String>
 }
 
 impl CodeConfig {
@@ -34,7 +35,8 @@ impl CodeConfig {
         CodeConfig {
             name: String::from(cfg_name),
             type_dict: HashMap::<String, String>::new(),
-            name_dict: HashMap::<String, String>::new()
+            name_dict: HashMap::<String, String>::new(),
+            global_cfg: HashMap::<String, String>::new()
         }
     }
 }
@@ -89,6 +91,12 @@ impl fmt::Display for RawCode {
 impl fmt::Display for CodeConfig {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let _ = write!(f, "Config: {}\n", self.name);
+        if self.global_cfg.len() > 0 {
+            let _ = write!(f, "Settings:\n");
+        }
+        for (k, v) in &self.global_cfg {
+            let _ = write!(f, " {} = {}\n", k, v);
+        }
         if self.name_dict.len() > 0 {
             let _ = write!(f, "Names:\n");
         }
@@ -168,17 +176,11 @@ pub fn generate_raw(data: &Vec<CodeData>, config_data: &Vec<CodeData>) -> RawCod
         let mut v = String::new();
         // process all config attributes
         for j in i.1.iter() {
-            if j.0 == NAME {
-                n = j.1.clone();
-                continue;
-            }
-            if j.0 == TYPE {
-                t = j.1.clone();
-                continue;
-            }
-            if j.0 == VALUE {
-                v = j.1.clone();
-                continue;
+            match j.0.as_str() {
+                NAME  => n = j.1.clone(),
+                TYPE  => t = j.1.clone(),
+                VALUE => v = j.1.clone(),
+                _ => { raw_code.configs.get_mut(&i.0).unwrap().global_cfg.insert(j.0.clone(), j.1.clone()); }
             }
         }
 
