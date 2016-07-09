@@ -1,5 +1,6 @@
 {
     "rust": [
+      { "num_tabs": "4", "tab_char": " " },
       { "type": "int", "value": "c_int" },
       { "type": "float", "value": "c_float" },
       { "type": "void", "value": "c_void" },

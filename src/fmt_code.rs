@@ -54,8 +54,8 @@ impl FormattedCode {
         }
         for (k, v) in config.global_cfg.iter() {
             match k.as_str() {
-                NUM_TABS => self.num_tabs = v.parse::<u8>().unwrap(),
-                TAB_CHAR => self.tab_char = v.chars().next().unwrap(),
+                NUM_TABS => if !v.is_empty() { self.num_tabs = v.parse::<u8>().unwrap(); },
+                TAB_CHAR => if !v.is_empty() { self.tab_char = v.chars().next().unwrap(); },
                 _ => {}
             }
         }
