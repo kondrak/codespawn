@@ -6,15 +6,16 @@ use std::io;
 use std::io::Error as IoError;
 use std::io::ErrorKind::Other as ReadError;
 use std::io::BufReader;
+use std::io::prelude::*;
 use std::path::Path;
 
 use self::xml::reader::{EventReader, XmlEvent};
 use string_gen::keywords::*;
 use raw_code::{RawCode, CodeData, generate_raw};
 
-pub fn process_xml(filename: &str) -> io::Result<RawCode> {
+pub fn process_xml_file(filename: &str) -> io::Result<RawCode> {
     let path = Path::new(&filename);
-    let file = match File::open(&path) {
+    let mut file = match File::open(&path) {
         Ok(file) => file,
         Err(why) => {
             return Err(IoError::new(ReadError, format!("Failed to open {} for reading: {}",
@@ -22,8 +23,14 @@ pub fn process_xml(filename: &str) -> io::Result<RawCode> {
         }
     };
 
-    let file = BufReader::new(file);
-    let parser = EventReader::new(file);
+    let mut xml_data = String::new();
+    try!(file.read_to_string(&mut xml_data));
+
+    process_xml_str(xml_data.as_str())
+}
+
+pub fn process_xml_str(xml_str: &str) -> io::Result<RawCode> {
+    let parser = EventReader::from_str(xml_str);
     let mut code_data = Vec::<CodeData>::new();
     let mut config_tags = Vec::<CodeData>::new();
     let mut config_data = Vec::<CodeData>::new();
@@ -48,8 +55,7 @@ pub fn process_xml(filename: &str) -> io::Result<RawCode> {
                 depth -= 1;
             }
             Err(why) => {
-                return Err(IoError::new(ReadError, format!("Error parsing {}: {}",
-                                                           filename, why.description())));
+                return Err(IoError::new(ReadError, format!("Error parsing XML: {}", why.description())));
             }
             _ => {}
         }

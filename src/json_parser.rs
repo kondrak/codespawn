@@ -11,7 +11,7 @@ use std::path::Path;
 use string_gen::keywords::*;
 use raw_code::{RawCode, CodeData, generate_raw};
 
-pub fn process_json(filename: &str) -> io::Result<RawCode> {
+pub fn process_json_file(filename: &str) -> io::Result<RawCode> {
     let path = Path::new(&filename);
     let mut file = match File::open(&path) {
         Ok(file) => file,
@@ -22,13 +22,17 @@ pub fn process_json(filename: &str) -> io::Result<RawCode> {
     };
 
     let mut json_data = String::new();
+    try!(file.read_to_string(&mut json_data));
+
+    process_json_str(json_data.as_str())
+}
+
+pub fn process_json_str(json_str: &str) -> io::Result<RawCode> {
     let mut code_data   = Vec::<CodeData>::new();
     let mut config_tags = Vec::<CodeData>::new();
     let mut config_data = Vec::<CodeData>::new();
-
-    try!(file.read_to_string(&mut json_data));
-
-    let parsed_json = json::parse(json_data.as_str()).unwrap();
+    
+    let parsed_json = json::parse(json_str).unwrap();
     for i in parsed_json.entries() {
         if i.0 == CONFIG {
             process(&i, &mut config_tags, 0);
@@ -39,6 +43,7 @@ pub fn process_json(filename: &str) -> io::Result<RawCode> {
     }
 
     // process configs, if found
+    let mut json_cfg = String::new();
     for c in config_tags.iter() {
         for a in c.1.iter() {
             if a.0 == FILE {
@@ -50,10 +55,10 @@ pub fn process_json(filename: &str) -> io::Result<RawCode> {
                                                                   path.display(), why.description())));
                     }
                 };
-                json_data.clear();
-                try!(file.read_to_string(&mut json_data));
+                json_cfg.clear();
+                try!(file.read_to_string(&mut json_cfg));
 
-                let parsed_json = json::parse(json_data.as_str()).unwrap();
+                let parsed_json = json::parse(json_cfg.as_str()).unwrap();
                 for i in parsed_json.entries() {
                     process(&i, &mut config_data, 0);
                 }
