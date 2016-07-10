@@ -37,41 +37,58 @@ fn check_from_json() {
 #[test]
 #[should_panic]
 fn check_from_xml_fail() {
-    let _ = codespawn::from_xml("foobar").unwrap();
-}
+    let _ = codespawn::from_xml("foobar").unwrap(); }
 
 #[test]
 #[should_panic]
 fn check_from_json_fail() {
-    let _ = codespawn::from_json("foobar").unwrap();
-}
+    let _ = codespawn::from_json("foobar").unwrap(); }
 
 #[test]
 #[should_panic]
 fn check_from_xml_fail_cfg() {
-    let _ = codespawn::from_xml_str("<config file=\"foobar\"/><var name=\"x\" type=\"int\"/>").unwrap();
-}
+    let _ = codespawn::from_xml_str("<config file=\"foobar\"/><var name=\"x\" type=\"int\"/>").unwrap(); }
 
 #[test]
 #[should_panic]
 fn check_from_json_fail_cfg() {
-    let _ = codespawn::from_json_str("{\"config\": { \"file\": \"foobar\" }, \"var\": {\"name\": \"x\", \"type\":\"int\" }}").unwrap();
-}
+    let _ = codespawn::from_json_str("{\"config\": { \"file\": \"foobar\" }, \"var\": {\"name\": \"x\", \"type\":\"int\" }}").unwrap(); }
 
 #[test]
 #[should_panic]
 fn check_from_xml_fail_malformed() {
-    let _ = codespawn::from_xml_str("<config file=\"foobar\"/>var name=\"x\" type=\"int\"/>").unwrap();
-}
-
-#[test]
-#[should_panic]
-fn check_from_xml_fail_malformed_cfg() {
-    let _ = codespawn::from_xml_str("<config file=\"tests/malformed_cfg.xml\"/>var name=\"x\" type=\"int\"/>").unwrap();
-}
+    let _ = codespawn::from_xml_str("<config file=\"foobar\"/>var name=\"x\" type=\"int\"/>").unwrap(); }
 
 #[test]
 #[should_panic]
 fn check_from_json_fail_malformed() {
-    let _ = codespawn::from_json_str("{\"config\": { \"file\": \"examples/rust.json\" } \"var\": {\"name\": \"x\", \"type\":\"int\" }}").unwrap();
-}
+    let _ = codespawn::from_json_str("{\"config\": { \"file\": \"examples/rust.json\" } \"var\": {\"name\": \"x\", \"type\":\"int\" }}").unwrap(); }
+
+#[test]
+#[should_panic]
+fn check_from_xml_fail_enum() {
+    let rc = codespawn::from_xml_str("<enum name=\"Foo\"><func name=\"x\" type=\"int\"/></enum>").unwrap();
+    rc.to_rust().to_string(); }
+
+#[test]
+#[should_panic]
+fn check_from_json_fail_enum() {
+    let rc = codespawn::from_json_str("{\"enum\":{ \"name\":\"Foo\",\"func\": { \"name\":\"x\",\"type\":\"int\"}}}").unwrap();
+    rc.to_cpp().to_string(); }
+
+#[test]
+#[should_panic]
+fn check_from_xml_fail_func() {
+    let rc = codespawn::from_xml_str("<func name=\"x\" type=\"int\"><enum name=\"Foo\"></enum></func>").unwrap();
+    rc.to_rust().to_string(); }
+
+#[test]
+#[should_panic]
+fn check_from_json_fail_func() {
+    let rc = codespawn::from_json_str("{\"func\": {\"name\":\"x\",\"type\":\"int\",\"enum\": {\"name\":\"Foo\"}}}").unwrap();
+    rc.to_cpp().to_string(); }
+
+#[test]
+#[should_panic]
+fn check_from_xml_fail_malformed_cfg() {
+    let _ = codespawn::from_xml_str("<config file=\"tests/malformed_cfg.xml\"/>var name=\"x\" type=\"int\"/>").unwrap(); }

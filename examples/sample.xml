@@ -4,15 +4,15 @@
 <var type="void*" name="void_ptr" qualifier="extern" />
 
 <!-- generate an enum -->
-<enum name="FooEnum">
-    <var name="EnumVal1" />
-    <var name="EnumVal2" />
-    <var name="EnumVal3" />
-    <var name="Count" value="3" />
+<enum name="FooEnum" attribute="#[repr(C)]">
+    <var name="EnumVal1" type="int" />
+    <var name="EnumVal2" type="int" />
+    <var name="EnumVal3" type="int" />
+    <var name="Count" value="3" type="int" />
 </enum>
 
 <!-- generate struct Foo, 2 ints, 1 function, 1 function ptr -->
-<struct name="Foo">
+<struct name="Foo" attribute="#[repr(C)]">
     <var type="int" name="x" />
     <var type="int" name="y" />
     
@@ -33,3 +33,6 @@
         </func>
     </struct>
 </struct>
+
+<!-- unsupported items will be ignored -->
+<some_item name="unsupported" type="whatever" />

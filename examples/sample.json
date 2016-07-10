@@ -7,15 +7,17 @@
     },
     "enum": {
       "name": "FooEnum",
+      "attribute": "#[repr(C)]",
       "var": [
-        { "name": "EnumVal1" },
-        { "name": "EnumVal2" },
-        { "name": "EnumVal3" },
-        { "name": "Count", "value": "3" }
+        { "name": "EnumVal1", "type": "int" },
+        { "name": "EnumVal2", "type": "int" },
+        { "name": "EnumVal3", "type": "int" },
+        { "name": "Count", "value": "3", "type": "int" }
       ]
     },
     "struct": {
       "name": "Foo",
+      "attribute": "#[repr(C)]",
       "var": [
         { "type": "int", "name": "x" },
         { "type": "int", "name": "y" }
@@ -57,5 +59,8 @@
           }
         }
       }
+    },
+    "some_item": { "type": "whatever",
+                   "name": "unsupported"
     }
 }

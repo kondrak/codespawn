@@ -6,7 +6,6 @@ pub fn convert(code_items: &Vec<CodeItem>, num_tabs: u8, tab_char: char) -> Stri
     for i in code_items.iter() {
         code_str = format!("{}{}", code_str, parse_item(i, 0, num_tabs, tab_char, false));
     }
-
     code_str
 }
 
