@@ -5,4 +5,53 @@
 
 Codespawn
 =========
-Code generator written in Rust
+Code generator written in Rust written for [ProDBG](https://github.com/emoon/ProDBG)
+
+Usage
+-----
+```toml
+# Cargo.toml
+[dependencies]
+codespawn = "0.1"
+```
+
+Example
+-------
+```rust
+extern crate codespawn;
+
+fn main()
+{
+    // generate from XML definition
+    let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
+    // generate from JSON definition
+    //let raw_code = codespawn::from_json("examples/sample.json").unwrap();
+
+    // generate code, store as String
+    let cpp_code  = raw_code.to_cpp().to_string();
+    let rust_code = raw_code.to_rust().to_string();
+
+    // generate and save directly to file
+    raw_code.to_cpp().to_file("sample.cpp");
+    raw_code.to_rust().to_file("sample.rs");
+}
+```
+
+Build instructions
+------------------
+
+```
+cargo build
+cargo run --example xml
+```
+
+This will run the [example](https://github.com/kondrak/codespawn/blob/master/examples/xml.rs) which will print all parsed sample definitions and save generated code to files.
+
+## License
+
+Licensed under either of
+
+ * Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+ * MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+
+at your option.
