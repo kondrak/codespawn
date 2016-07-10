@@ -10,11 +10,11 @@ fn check_from_xml() {
 
     println!("{}", raw_code);
     println!("{}", raw_code.to_cpp());
-    println!("{}", raw_code.tp_rust());
+    println!("{}", raw_code.to_rust());
 
     // save to .rst file instead of .rs so that subsequent test don't get confused
-    raw_code.to_rust().to_file("tests/sample.rst");
-    raw_code.to_cpp().to_file("tests/sample.cpp");
+    let _ = raw_code.to_rust().to_file("tests/sample.rst");
+    let _ = raw_code.to_cpp().to_file("tests/sample.cpp");
 }
 
 #[test]
@@ -27,11 +27,11 @@ fn check_from_json() {
 
     println!("{}", raw_code);
     println!("{}", raw_code.to_cpp());
-    println!("{}", raw_code.tp_rust());
+    println!("{}", raw_code.to_rust());
 
     // save to .rst file instead of .rs so that subsequent test don't get confused
-    raw_code.to_rust().to_file("tests/sample.rst");
-    raw_code.to_cpp().to_file("tests/sample.cpp");
+    let _ = raw_code.to_rust().to_file("tests/sample.rst");
+    let _ = raw_code.to_cpp().to_file("tests/sample.cpp");
 }
 
 #[test]
