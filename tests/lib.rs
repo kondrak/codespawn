@@ -3,6 +3,15 @@ extern crate codespawn;
 #[test]
 fn check_from_xml() {
     let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
+
+    for c in raw_code.configs.iter() {
+        println!("{}", c.1);
+    }
+
+    println!("{}", raw_code);
+    println!("{}", raw_code.to_cpp());
+    println!("{}", raw_code.tp_rust());
+
     // save to .rst file instead of .rs so that subsequent test don't get confused
     raw_code.to_rust().to_file("tests/sample.rst");
     raw_code.to_cpp().to_file("tests/sample.cpp");
@@ -11,6 +20,15 @@ fn check_from_xml() {
 #[test]
 fn check_from_json() {
     let raw_code = codespawn::from_json("examples/sample.json").unwrap();
+
+    for c in raw_code.configs.iter() {
+        println!("{}", c.1);
+    }
+
+    println!("{}", raw_code);
+    println!("{}", raw_code.to_cpp());
+    println!("{}", raw_code.tp_rust());
+
     // save to .rst file instead of .rs so that subsequent test don't get confused
     raw_code.to_rust().to_file("tests/sample.rst");
     raw_code.to_cpp().to_file("tests/sample.cpp");
@@ -44,6 +62,12 @@ fn check_from_json_fail_cfg() {
 #[should_panic]
 fn check_from_xml_fail_malformed() {
     let _ = codespawn::from_xml_str("<config file=\"foobar\"/>var name=\"x\" type=\"int\"/>").unwrap();
+}
+
+#[test]
+#[should_panic]
+fn check_from_xml_fail_malformed_cfg() {
+    let _ = codespawn::from_xml_str("<config file=\"tests/malformed_cfg.xml\"/>var name=\"x\" type=\"int\"/>").unwrap();
 }
 
 #[test]
