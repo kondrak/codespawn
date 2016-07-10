@@ -23,11 +23,3 @@ pub fn from_json(filename: &str) -> io::Result<RawCode> {
 pub fn from_json_str(json: &str) -> io::Result<RawCode> {
     json_parser::process_json_str(json)
 }
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        println!("Hello world!");
-    }
-}

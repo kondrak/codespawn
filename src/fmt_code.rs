@@ -2,8 +2,11 @@ use std::fmt;
 use std::fs::File;
 use std::error::Error;
 use std::io;
+use std::io::Error as IoError;
+use std::io::ErrorKind::Other as ReadError;
 use std::io::prelude::*;
 use std::path::Path;
+
 use raw_code::{CodeItem, CodeConfig, print_code_item};
 use string_gen::keywords::*;
 use string_gen::{code_to_str};
@@ -77,8 +80,11 @@ impl FormattedCode {
         let code = self.to_string();
         let path = Path::new(&filename);
         let mut file = match File::create(&path) {
-            Err(why) => panic!("Couldn't open {} for writing: {}", path.display(), why.description()),
             Ok(file) => file,
+            Err(why) => {
+                return Err(IoError::new(ReadError, format!("Failed to open {} for writing: {}",
+                                                           path.display(), why.description())));
+            }
         };
 
         file.write_all(code.as_bytes())
