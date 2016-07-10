@@ -1,4 +1,5 @@
 extern crate codespawn;
+
 #[test]
 fn check_from_xml() {
     let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
@@ -95,5 +96,5 @@ fn check_from_xml_fail_malformed_cfg() {
 #[test]
 #[should_panic]
 fn check_write_file() {
-    let raw_code = codespawn::from_json("examples/sample.xml").unwrap();
+    let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
     raw_code.to_cpp().to_file("").unwrap(); }
