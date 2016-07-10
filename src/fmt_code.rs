@@ -87,7 +87,8 @@ impl FormattedCode {
             }
         };
 
-        file.write_all(code.as_bytes())
+        try!(file.write_all(code.as_bytes()));
+        Ok(())
     }
 
     // generate a string with output code
