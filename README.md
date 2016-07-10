@@ -48,7 +48,7 @@ cargo build
 cargo run --example xml
 ```
 
-This will run the [example](https://github.com/kondrak/codespawn/blob/master/examples/xml.rs) which will print all parsed sample definitions and save generated code to files.
+This will run the [example](https://github.com/kondrak/codespawn/blob/master/examples/xml.rs) which will generate code and save it to files using sample XML definition.
 
 ## License
 
