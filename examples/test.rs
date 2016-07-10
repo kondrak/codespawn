@@ -2,7 +2,7 @@ extern crate codespawn;
 
 fn main()
 {
-    let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
+    let raw_code = codespawn::from_json("examples/sample.json").unwrap();
     for c in raw_code.configs.iter() {
         println!("{}", c.1);
     }
@@ -11,6 +11,7 @@ fn main()
     let rust_code = raw_code.to_rust();
     println!("{}", rust_code);
     println!("{}", cpp_code.to_string());
+    println!("{}", rust_code.to_string());
     //code_data.to_cpp().to_file("sample.cpp");
     //code_data.to_rust().to_file("sample.rs");
 }

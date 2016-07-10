@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8" ?>
-
 <!-- include type and name definitions for other languages -->
 <config file="examples/rust.xml" />
+
+<var type="void*" name="void_ptr" qualifier="extern" />
 
 <!-- generate an enum -->
 <enum name="FooEnum">
@@ -23,4 +23,13 @@
         <var type="const char*" name="fmt" />
         <var type="..." />
     </func>
+    <struct name="Bar">
+        <enum name="BarEnum">
+            <var name="EnumVal4" />
+            <var name="EnumVal5" />
+        </enum>
+        <func qualifier="extern" type="int" name="foo" >
+            <var type="int" name="x" value="1" />
+        </func>
+    </struct>
 </struct>

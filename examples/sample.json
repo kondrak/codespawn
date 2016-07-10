@@ -1,5 +1,10 @@
 {
     "config": { "file": "examples/rust.json" },
+    
+    "var": { "type": "void*",
+             "name": "void_ptr",
+             "qualifier": "extern"
+    },
     "enum": {
       "name": "FooEnum",
       "var": [
@@ -31,6 +36,26 @@
             { "type": "..." }
           ]
         }
-      ]
+      ],
+      "struct": {
+            "name": "Bar",
+            "enum": {
+                "name": "BarEnum",
+                "var": [
+                    { "name": "EnumVal4" },
+                    { "name": "EnumVal5" }
+                ]
+            },
+      "func": {
+          "qualifier": "extern",
+          "type": "int",
+          "name": "foo",
+          "var": {
+            "type": "int",
+            "name": "x",
+            "value": "1"
+          }
+        }
+      }
     }
 }

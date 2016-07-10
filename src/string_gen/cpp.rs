@@ -6,7 +6,6 @@ pub fn convert(code_items: &Vec<CodeItem>, num_tabs: u8, tab_char: char) -> Stri
     for i in code_items.iter() {
         code_str = format!("{}{}", code_str, parse_item(i, 0, num_tabs, tab_char));
     }
-
     code_str
 }
 
@@ -16,7 +15,7 @@ fn parse_item(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
         VAR    => make_variable(e, depth, num_tabs, tab_char),
         FUNC   => make_function(e, depth, num_tabs, tab_char),
         STRUCT => make_struct(e, depth, num_tabs, tab_char),
-        _ => String::from(""),
+        _      => String::from(""),
     }
 }
 
