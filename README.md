@@ -10,6 +10,8 @@ Codespawn is a basic C++ and Rust code generator. Desired API can be defined usi
 
 Initially, this crate was created as a helper tool for [ProDBG](https://github.com/emoon/ProDBG).
 
+[Documentation](https://kondrak.github.io/codespawn/codespawn/index.html)
+
 Usage
 -----
 ```toml
