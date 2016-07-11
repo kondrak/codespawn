@@ -21,9 +21,10 @@
 //!    let cpp_code  = raw_code.to_cpp().to_string();
 //!    let rust_code = raw_code.to_rust().to_string();
 //!
-//!    // generate and save directly to file
+//!    // generate C++ and save directly to file
 //!    raw_code.to_cpp().to_file("examples/sample.cpp");
-//!    raw_code.to_rust().to_file("examples/sample.rs");
+//!    // generate Rust and save directly to file
+//!    //raw_code.to_rust().to_file("examples/sample.rs");
 //!}
 //!```
 mod xml_parser;

@@ -96,7 +96,7 @@ impl FormattedCode {
     ///
     /// // Create a FormattedCode object for C++ language
     /// let cpp_code = raw_code.to_cpp();
-    /// cpp_code.to_file("sample.cpp");
+    /// cpp_code.to_file("examples/sample.cpp");
     /// ```      
     pub fn to_file(&self, filename: &str) -> io::Result<()> {
         let code = self.to_string();
