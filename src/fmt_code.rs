@@ -1,3 +1,4 @@
+//! Structures and formatters for language-specific code data.
 use std::fmt;
 use std::fs::File;
 use std::error::Error;
@@ -11,20 +12,29 @@ use raw_code::{CodeItem, CodeConfig, print_code_item};
 use string_gen::keywords::*;
 use string_gen::{code_to_str};
 
+/// Supported languages.
 #[derive(PartialEq, Eq, Hash)]
 pub enum Lang {
     Cpp,
     Rust
 }
 
+/// Formatted code data representation.
+/// Object of this type is already pre-parsed and ready to generate code for the specific
+/// language it's been formatted to.
 pub struct FormattedCode {
+    /// Language name.
     pub language: Lang,
+    /// List of code elements, formatted for current language.
     pub elements: Vec<CodeItem>,
+    /// Number of tab characters per line (default: 4).
     pub num_tabs: u8,
+    /// Tab character to be used (default: space).
     pub tab_char: char,
 }
 
 impl FormattedCode {
+    #[doc(hidden)]
     pub fn new(lang: Lang, cfg: &Option<&CodeConfig>, data: &Vec<CodeItem>) -> FormattedCode {
         let mut fmt_code = FormattedCode {
             language: lang,
@@ -75,7 +85,19 @@ impl FormattedCode {
         }
     }
 
-    // save generated code (formatted as string) to file
+    /// Saves generated code to file.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate codespawn;
+    ///
+    /// let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
+    ///
+    /// // Create a FormattedCode object for C++ language
+    /// let cpp_code = raw_code.to_cpp();
+    /// cpp_code.to_file("sample.cpp");
+    /// ```      
     pub fn to_file(&self, filename: &str) -> io::Result<()> {
         let code = self.to_string();
         let path = Path::new(&filename);
@@ -91,7 +113,19 @@ impl FormattedCode {
         Ok(())
     }
 
-    // generate a string with output code
+    /// Generates code and returns it as a `String`
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate codespawn;
+    ///
+    /// let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
+    ///
+    /// // Create a FormattedCode object for C++ language
+    /// let cpp_code = raw_code.to_cpp();
+    /// println!("Generated C++ code:\n {}", cpp_code.to_string());
+    /// ```
     pub fn to_string(&self) -> String {
         code_to_str(self)
     }

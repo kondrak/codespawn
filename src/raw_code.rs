@@ -1,19 +1,26 @@
+//! Structures and generators for abstract code data.
 use std::fmt;
 use std::collections::HashMap;
 use fmt_code::{FormattedCode, Lang};
 use string_gen::keywords::{NAME, TYPE, VALUE};
 
 // (element name, attributes (Vec<name, value>), depth in API file structure)
+#[doc(hidden)]
 pub type CodeData = (String, Vec<(String, String)>, u8);
 
+/// Representation of a single code element.
 #[derive(Clone)]
 pub struct CodeItem {
+    /// Name of the element.
     pub name: String,
+    /// List of element's attributes and properties.
     pub attributes: Vec<(String, String)>,
+    /// List of child elements.
     pub children: Vec<CodeItem>
 }
 
 impl CodeItem {
+    #[doc(hidden)]
     pub fn new(item_name: &str, item_attribs: Vec<(String, String)>) -> CodeItem {
         CodeItem {
             name: String::from(item_name),
@@ -23,14 +30,20 @@ impl CodeItem {
     }
 }
 
+/// Language-specific configuration map.
 pub struct CodeConfig {
+    /// Name of the configuration (can be `cpp` or `rust`).
     pub name: String,
+    /// Maps abstract type to overriden, language-specific type. Can be empty if no overrides are specified in config.
     pub type_dict: HashMap<String, String>,
+    /// Maps abstract name to overriden, language-specific name (variables, functions, attributes etc.). Can be empty if no overrides are specified in config.
     pub name_dict: HashMap<String, String>,
+    /// List of global configuration data for given language.
     pub global_cfg: HashMap<String, String>
 }
 
 impl CodeConfig {
+    #[doc(hidden)]
     pub fn new(cfg_name: &str) -> CodeConfig {
         CodeConfig {
             name: String::from(cfg_name),
@@ -41,13 +54,18 @@ impl CodeConfig {
     }
 }
 
+/// Abstract code data representation.
+/// Object of this type can be used to generate desired code.
 pub struct RawCode {
+    /// Map of language-specific configurations.
     pub configs: HashMap<String, CodeConfig>,
+    /// A vector of all code elements.
     pub elements: Vec<CodeItem>,
     supported_langs: HashMap<Lang, String>
 }
 
 impl RawCode {
+    #[doc(hidden)]
     pub fn new() -> RawCode {
         let mut rc = RawCode {
             configs: HashMap::<String, CodeConfig>::new(),
@@ -61,11 +79,30 @@ impl RawCode {
         rc
     }
 
-    // convert raw data to cpp code
+    /// Converts `RawCode` into C++ `FormattedCode`
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate codespawn;
+    ///
+    /// let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
+    /// let cpp_code = raw_code.to_cpp();
+    /// ```    
     pub fn to_cpp(&self) -> FormattedCode {
         self.to_lang(Lang::Cpp)
     }
-    // convert raw data to Rust code
+
+    /// Converts `RawCode` into Rust `FormattedCode`
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate codespawn;
+    ///
+    /// let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
+    /// let cpp_code = raw_code.to_rust();
+    /// ```
     pub fn to_rust(&self) -> FormattedCode {
         self.to_lang(Lang::Rust)
     }
@@ -114,6 +151,7 @@ impl fmt::Display for CodeConfig {
 }
 
 // used by Display trait to print the tree of elements
+#[doc(hidden)]
 pub fn print_code_item(e: &CodeItem, f: &mut fmt::Formatter, depth: u8, empty_spaces: &mut Vec<u8>) {
     // indentation
     for i in 0..depth {
@@ -163,6 +201,7 @@ pub fn print_code_item(e: &CodeItem, f: &mut fmt::Formatter, depth: u8, empty_sp
 }
 
 // create RawCode element from pre-parsed data
+#[doc(hidden)]
 pub fn generate_raw(data: &Vec<CodeData>, config_data: &Vec<CodeData>) -> RawCode {
     let mut raw_code = RawCode::new();
 
