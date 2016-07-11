@@ -4,7 +4,7 @@
 <var type="void*" name="void_ptr" qualifier="extern" />
 
 <!-- generate an enum -->
-<enum name="FooEnum" attribute="#[repr(C)]">
+<enum name="FooEnum" attribute="C-ABI">
     <var name="EnumVal1" type="int" />
     <var name="EnumVal2" type="int" />
     <var name="EnumVal3" type="int" />
@@ -12,7 +12,7 @@
 </enum>
 
 <!-- generate struct Foo, 2 ints, 1 function, 1 function ptr -->
-<struct name="Foo" attribute="#[repr(C)]">
+<struct name="Foo" attribute="C-ABI">
     <var type="int" name="x" />
     <var type="int" name="y" />
     

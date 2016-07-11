@@ -14,3 +14,4 @@
 
 <!-- Use different name for Rust generated struct -->
 <rust name="Foo" value="CFoo" />
+<rust name="C-ABI" value="#[repr(C)]" />
