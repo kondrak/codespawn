@@ -14,7 +14,6 @@
 <!-- Include config file for Rust -->
 <config file="examples/rust.xml" />
 
-
 <!-- <var />: Generate a single variable. If nested by <func> tags, the variable
             becomes the function's input parameter. 
             
