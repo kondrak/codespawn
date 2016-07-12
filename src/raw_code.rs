@@ -132,7 +132,8 @@ impl fmt::Display for CodeConfig {
             let _ = write!(f, "Settings:\n");
         }
         for (k, v) in &self.global_cfg {
-            let _ = write!(f, "  {} = {}\n", k, v);
+            let _ = write!(f, "  {} = {}\n", k, match v.as_str() {
+                "	" => "<tab>", " " => "<space>", _ => v.as_str() });
         }
         if self.name_dict.len() > 0 {
             let _ = write!(f, "Names:\n");

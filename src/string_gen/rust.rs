@@ -40,7 +40,7 @@ fn make_enum(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
         }
     }
 
-    let mut enum_str = format!("{}{}pub enum{}{}", e_attr, start_indent, e_name, " {\n");
+    let mut enum_str = format!("\n{}{}pub enum{}{}", e_attr, start_indent, e_name, " {\n");
 
     for c in e.children.iter() {
         match c.name.as_ref() {
@@ -168,7 +168,7 @@ fn make_struct(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String 
         }
     }
 
-    let mut struct_str = format!("{}{}pub struct{}{}", s_attr, start_indent, s_name, " {\n");
+    let mut struct_str = format!("\n{}{}pub struct{}{}", s_attr, start_indent, s_name, " {\n");
 
     for c in e.children.iter() {
         struct_str.push_str(parse_item(c, depth+1, num_tabs, tab_char, true).as_str());
