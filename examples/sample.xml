@@ -67,7 +67,6 @@
       - <var /> - Function patameter. Name is optional in this case. Function will take no
                   parameters if no <var />'s are defined
 -->
-
 <!-- function: int get_ascii(char& letter); -->
 <func type="int" name="get_ascii"> 
     <var type="char&amp;" name="letter" />
