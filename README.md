@@ -8,7 +8,7 @@ Codespawn
 
 Codespawn is a basic C++ and Rust code generator. Desired API can be defined using either JSON or XML and the crate supports both reading from a file or a string. As of 0.1 release, it's possible to generate enums, structs, functions and variables with all applicable attributes and properties.
 
-Initially, this crate was created as a helper tool for [ProDBG](https://github.com/emoon/ProDBG).
+Initially, this crate was created as a helper tool for [ProDBG](https://github.com/emoon/ProDBG). See [example XML](https://github.com/kondrak/codespawn/blob/master/examples/sample.xml) for instructions on how to construct the API definition.
 
 [Documentation](https://kondrak.github.io/codespawn/codespawn/index.html)
 
