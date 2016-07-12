@@ -1,66 +1,113 @@
 {
     "config": { "file": "examples/rust.json" },
-    
-    "var": { "type": "void*",
-             "name": "void_ptr",
-             "qualifier": "extern"
+    "var": [
+    {
+        "type": "void*",
+        "name": "void_ptr",
+        "qualifier": "extern"
     },
+    {
+        "type": "int",
+        "name": "some_number",
+        "value": "1"
+    }
+    ],
     "enum": {
-      "name": "FooEnum",
-      "attribute": "C-ABI",
-      "var": [
-        { "name": "EnumVal1", "type": "int" },
-        { "name": "EnumVal2", "type": "int" },
-        { "name": "EnumVal3", "type": "int" },
-        { "name": "Count", "value": "3", "type": "int" }
-      ]
-    },
-    "struct": {
-      "name": "Foo",
-      "attribute": "C-ABI",
-      "var": [
-        { "type": "int", "name": "x" },
-        { "type": "int", "name": "y" }
-      ],
-      "func": [
+    "name": "GenericEnum",
+    "attribute": "C-ABI",
+    "var": [
         {
-          "type": "char",
-          "name": "return_arg",
-          "var": {
-            "type": "char",
-            "name": "arg"
-          }
+        "name": "EnumVal1",
+        "type": "int"
         },
         {
-          "type": "void (*sample_ptr)",
-          "var": [
-            { "type": "const char*", "name": "fmt" },
-            { "type": "..." }
-          ]
+        "name": "EnumVal2",
+        "type": "int"
+        },
+        {
+        "name": "Count",
+        "value": "2",
+        "type": "int"
         }
-      ],
-      "struct": {
-            "name": "Bar",
-            "enum": {
-                "name": "BarEnum",
-                "var": [
-                    { "name": "EnumVal4" },
-                    { "name": "EnumVal5" }
-                ]
-            },
-      "func": {
-          "qualifier": "extern",
-          "type": "int",
-          "name": "foo",
-          "var": {
-            "type": "int",
-            "name": "x",
-            "value": "1"
-          }
-        }
-      }
+    ]
     },
-    "some_item": { "type": "whatever",
-                   "name": "unsupported"
+    "func": [
+    {
+        "type": "int",
+        "name": "get_ascii",
+        "var": {
+        "type": "char&",
+        "name": "letter"
+        }
+    },
+    {
+        "type": "void",
+        "name": "process_func"
+    },
+    {
+        "type": "void (*fptr)",
+        "var": [
+        {
+            "type": "const int*",
+            "name": "fmt"
+        },
+        { "type": "char&" }
+        ]
+    }
+    ],
+    "struct": {
+    "name": "GenericStruct",
+    "attribute": "C-ABI",
+    "var": [
+        {
+        "type": "int",
+        "name": "x"
+        },
+        {
+        "type": "int",
+        "name": "y"
+        }
+    ],
+    "func": [
+        {
+        "type": "int",
+        "name": "return_int",
+        "var": {
+            "type": "float",
+            "name": "arg"
+        }
+        },
+        {
+        "type": "void (*internal_ptr)",
+        "var": {
+            "type": "const char*",
+            "name": "arg"
+        }
+        }
+    ],
+    "struct": {
+        "name": "SubStruct",
+        "enum": {
+        "name": "SubEnum",
+        "var": [
+            { "name": "SubElement1" },
+            { "name": "SubElement2" }
+        ]
+        },
+        "func": {
+        "qualifier": "static",
+        "type": "char",
+        "name": "do_magic",
+        "var": {
+            "type": "int",
+            "name": "magic_number",
+            "value": "42"
+        }
+        }
+    }
+    },
+    "some_item": {
+    "name": "unsupported",
+    "type": "whatever"
     }
 }

@@ -1,35 +1,119 @@
-<!-- include type and name definitions for other languages -->
+<!-- 
+     Sample API that generates code with all supported features.
+-->
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!-- <config />: Include an optional config file with type and name redefinitions.
+                 You can include as many configs as you want.
+     
+     * Required attributes: 
+        file - Path to config file.
+     * Optional attributes: none
+     * Valid children: none
+-->
+<!-- Include config file for Rust -->
 <config file="examples/rust.xml" />
 
+
+<!-- <var />: Generate a single variable. If nested by <func> tags, the variable
+            becomes the function's input parameter. 
+            
+    * Required attributes:
+        - type  - Type of the variable.
+        - name  - Variable name. Requried for standalone variables, optional for function parameters.
+    * Optional attributes:
+        - value - Initialization value for the variable or a default value for function parameter.
+        - qualifier - Variable's qualifier (extern, static, etc.)
+    * Valid children: none
+-->
+<!-- variable: extern void* void_ptr;  -->
 <var type="void*" name="void_ptr" qualifier="extern" />
 
-<!-- generate an enum -->
-<enum name="FooEnum" attribute="C-ABI">
+<!-- variable: int some_number = 1;  -->
+<var type="int" name="some_number" value="1" />
+
+<!-- <enum></enum>: Generate an enumerator. 
+
+    * Required attributes:
+      - name - Enum name.
+    * Optional attributes:
+      - attribute - Adds an attribute/decorator to the enum. Ignored by C++.
+    * Valid children:
+      - <var /> - Enumerator field. All fields except 'name' are optional.
+                  If 'type' is specified, it will be ignored by C++ and interpreted
+                  by Rust as a typecast.
+-->
+<!-- enum: (attribute and var types will be used only by Rust)
+    enum GenericEnum {
+        EnumVal1,
+        EnumVal2,
+        Count = 2,
+    };
+-->
+<enum name="GenericEnum" attribute="C-ABI">
     <var name="EnumVal1" type="int" />
     <var name="EnumVal2" type="int" />
-    <var name="EnumVal3" type="int" />
-    <var name="Count" value="3" type="int" />
+    <var name="Count" value="2" type="int" />
 </enum>
 
-<!-- generate struct Foo, 2 ints, 1 function, 1 function ptr -->
-<struct name="Foo" attribute="C-ABI">
+<!-- <func></func>: Generate a function.
+
+    * Required attributes:
+      - type - Function's return type.
+      - name - Name of the function. This attribute can be skipped if you want to generate a 
+               C/C++ function pointer, in which case the definition will be ignored by Rust.
+    * Optional attributes:
+      - qualifier - Function's qualifier (extern, static, etc.).
+    * Valid children:
+      - <var /> - Function patameter. Name is optional in this case. Function will take no
+                  parameters if no <var />'s are defined
+-->
+
+<!-- function: int get_ascii(char& letter); -->
+<func type="int" name="get_ascii"> 
+    <var type="char&amp;" name="letter" />
+</func>
+
+<!-- function: static void process_func(); -->
+<func type="void" name="process_func" />
+
+<!-- function pointer: void (*fptr)(const int* fmt, char&); 
+     Ignored by Rust.
+-->
+<func type="void (*fptr)">
+    <var type="const int*" name="fmt" />
+    <var type="char&amp;" />
+</func>
+
+<!-- <struct></struct>: Generate a structure.
+
+    * Required attributes:
+        name - Struct name.
+    * Optional attributes: 
+        attribute - Adds an attribute/decorator to the struct. Ignored by C++.
+    * Valid children:
+        - <var />
+        - <func></func>
+        - <enum></enum>
+        - <struct></struct>
+-->
+<!-- Generate a structure with nested elements -->
+<struct name="GenericStruct" attribute="C-ABI">
     <var type="int" name="x" />
-    <var type="int" name="y" />
-    
-    <func type="char" name="return_arg"> <!-- char return_arg(char arg); -->
-        <var type="char" name="arg" />
+    <var type="int" name="y" />    
+    <func type="int" name="return_int">
+        <var type="float" name="arg" />
     </func>
-    <func type="void (*sample_ptr)"> <!-- function pointer void (*sample_ptr(const char* fmt, ...); -->
-        <var type="const char*" name="fmt" />
-        <var type="..." />
+    <func type="void (*internal_ptr)">
+        <var type="const char*" name="arg" />
     </func>
-    <struct name="Bar">
-        <enum name="BarEnum">
-            <var name="EnumVal4" />
-            <var name="EnumVal5" />
+    <struct name="SubStruct">
+        <enum name="SubEnum">
+            <var name="SubElement1" />
+            <var name="SubElement2" />
         </enum>
-        <func qualifier="extern" type="int" name="foo" >
-            <var type="int" name="x" value="1" />
+        <func qualifier="static" type="char" name="do_magic" >
+            <var type="int" name="magic_number" value="42" />
         </func>
     </struct>
 </struct>

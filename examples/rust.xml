@@ -1,6 +1,29 @@
+<!-- A config file can be used to redefine/override types and names for
+     each language separately. This way, the main definition XML can stay
+     type and name neutral. If no override is specified for a particular
+     language, then the value from definition XML will be used.
+     
+     * Valid tags:
+     - <rust /> - Override will be used when generating Rust code.
+     - <cpp />  - Override will be used when generating C/C++ code.
+
+     * Valid attributes:
+     - num_tabs - Defines how many tab characters to insert per indentation.
+                  Defaults to 4 if not specified.
+     - tab_char - Defines the actual tab character. Default: space.
+     - value - Used in conjunction with either 'name' or 'type'. Defines 
+               the override value. Can be defined as empty.
+     - type  - When specified, 'value' will override all occurences 
+               of type 'type' in generated code.
+     - name  - When specified, 'value' will override all occurences 
+               of name 'name' in generated code. This applies to
+               all named code objects (so variables, functions, structs etc.)
+-->
 <?xml version="1.0" encoding="utf-8" ?>
 
-<rust num_tabs="4" tab_char=" " />
+<!-- set num tabs to 1 and use tabs instead of spaces -->
+<rust num_tabs="1" tab_char="&#9;" />
+
 <!-- declare type names for Rust -->
 <rust type="int" value="c_int" />
 <rust type="float" value="c_float" />
@@ -13,5 +36,5 @@
 <rust type="const char*" value="*const c_char" />
 
 <!-- Use different name for Rust generated struct -->
-<rust name="Foo" value="CFoo" />
+<rust name="GenericStruct" value="RustStruct" />
 <rust name="C-ABI" value="#[repr(C)]" />

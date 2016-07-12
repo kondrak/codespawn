@@ -1,6 +1,6 @@
 {
     "rust": [
-      { "num_tabs": "4", "tab_char": " " },
+      { "num_tabs": "1", "tab_char": "\t" },
       { "type": "int", "value": "c_int" },
       { "type": "float", "value": "c_float" },
       { "type": "void", "value": "c_void" },
@@ -10,7 +10,7 @@
       { "type": "void*", "value": "*mut c_void" },
       { "type": "const float*", "value": "*const c_float" },
       { "type": "const char*", "value": "*const c_char" },
-      { "name": "Foo", "value": "CFoo" },
+      { "name": "GenericStruct", "value": "RustStruct" },
       { "name": "C-ABI", "value": "#[repr(C)]"}
     ]
 }
