@@ -1,7 +1,7 @@
 [package]
 name = "codespawn"
-version = "0.1.0"
-description = "C++ and Rust code generator"
+version = "0.1.1"
+description = "C++ and Rust code generator."
 keywords = ["codegen", "gencode", "code", "generator"]
 license = "MIT/Apache-2.0"
 authors = ["Krzysztof Kondrak <krzysztof.kondrak@gmail.com>"]
