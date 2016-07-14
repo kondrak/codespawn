@@ -32,6 +32,9 @@
 <!-- variable: int some_number = 1;  -->
 <var type="int" name="some_number" value="1" />
 
+<!-- ignored variable - no type specified -->
+<var name="ignored_var" />
+
 <!-- <enum></enum>: Generate an enumerator. 
 
     * Required attributes:
