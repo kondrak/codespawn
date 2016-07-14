@@ -11,6 +11,7 @@
       { "type": "const float*", "value": "*const c_float" },
       { "type": "const char*", "value": "*const c_char" },
       { "name": "GenericStruct", "value": "RustStruct" },
-      { "name": "C-ABI", "value": "#[repr(C)]"}
+      { "name": "C-ABI", "value": "#[repr(C)]"},
+      { "name": "...", "value": ""}
     ]
 }

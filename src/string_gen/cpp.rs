@@ -88,7 +88,13 @@ fn make_variable(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> Strin
         }
     }
 
-    format!("{}{}{} {}{};\n", start_indent, q, t, n, v)
+    // var type undefined or empty (ignored)? skip it
+    if !t.is_empty() {
+        format!("{}{}{} {}{};\n", start_indent, q, t, n, v)
+    }
+    else {
+        String::from("")
+    }
 }
 
 fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, fptr: bool, is_arg: bool) -> String {
@@ -133,8 +139,12 @@ fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, fptr: bo
                         _ => {}
                     };
                 }
-                func_str.push_str(format!("{}{}{}", t, n, v).as_str());
-                first_arg = false;
+
+                // var type undefined or empty (ignored)? skip it
+                if !t.is_empty() {
+                    func_str.push_str(format!("{}{}{}", t, n, v).as_str());
+                    first_arg = false;
+                }
             },
             FPTR => {
                 let separator = if comma && !first_arg { ", " } else { "" };

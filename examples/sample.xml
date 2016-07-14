@@ -18,7 +18,8 @@
             becomes the function's input parameter. 
             
     * Required attributes:
-        - type  - Type of the variable.
+        - type  - Type of the variable. Tag will be ignored in generated code if
+                  'type' is overriden to "" in language config (see ellipsis example).
         - name  - Variable name. Requried for standalone variables, optional for function parameters.
     * Optional attributes:
         - value - Initialization value for the variable or a default value for function parameter.
@@ -77,6 +78,13 @@
 
 <!-- function: static void process_func(); -->
 <func type="void" name="process_func" qualifier="static" />
+
+<!-- function: void func_ellipsis(const char* str, ...); -->
+<func type="void" name="func_ellipsis">
+    <var type="const char*" name="str" />
+    <var type="..." />
+    <var name="ignored_var" /> <!-- no type specified - variable will be ignored -->
+</func>
 
 <!-- <fptr></fptr>: Generate a function pointer.
 

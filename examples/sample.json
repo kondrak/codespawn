@@ -52,6 +52,23 @@
         "type": "void",
         "name": "process_func",
         "qualifier": "static"
+    },
+    {
+        "type": "void",
+        "name": "func_ellipsis",
+        "qualifier": "static",
+        "var": [
+            {
+                "type": "const char*",
+                "name": "str"
+            },
+            {
+                "type": "..."
+            },
+            {
+                "name": "ignored_var"
+            }
+        ]
     }
     ],
     "fptr": [

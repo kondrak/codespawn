@@ -92,11 +92,17 @@ fn make_variable(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_v
         }
     }
 
-    if struct_var {
-        format!("{}pub {}: {}{},\n", start_indent, n, t, v)
+    // var type undefined or empty (ignored)? skip it
+    if !t.is_empty() {
+        if struct_var {
+            format!("{}pub {}: {}{},\n", start_indent, n, t, v)
+        }
+        else {
+            format!("{}pub {} {}: {}{};\n", start_indent, q, n, t, v)
+        }
     }
     else {
-        format!("{}pub {} {}: {}{};\n", start_indent, q, n, t, v)
+        String::from("")
     }
 }
 
@@ -142,8 +148,12 @@ fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_f
                         _ => {}
                     };
                 }
-                func_str.push_str(format!("{}{}{}", if comma && !first_arg { ", " } else { "" }, n, t).as_str());
-                first_arg = false;
+
+                // var type undefined or empty (ignored)? skip it
+                if !t.is_empty() {
+                    func_str.push_str(format!("{}{}{}", if comma && !first_arg { ", " } else { "" }, n, t).as_str());
+                    first_arg = false;
+                }
             },
             FPTR => {
                 let separator = if comma && !first_arg { ", " } else { "" };

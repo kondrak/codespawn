@@ -38,3 +38,5 @@
 <!-- Use different name for Rust generated struct -->
 <rust name="GenericStruct" value="RustStruct" />
 <rust name="C-ABI" value="#[repr(C)]" />
+<!-- Override ellipsis to ignore this variable type in Rust code -->
+<rust name="..." value="" />
