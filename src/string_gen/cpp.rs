@@ -13,7 +13,8 @@ fn parse_item(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
     match e.name.as_ref() {
         ENUM   => make_enum(e, depth, num_tabs, tab_char),
         VAR    => make_variable(e, depth, num_tabs, tab_char),
-        FUNC   => make_function(e, depth, num_tabs, tab_char),
+        FUNC   => make_function(e, depth, num_tabs, tab_char, false, false),
+        FPTR   => make_function(e, depth, num_tabs, tab_char, true, false),
         STRUCT => make_struct(e, depth, num_tabs, tab_char),
         _      => String::from(""),
     }
@@ -90,18 +91,24 @@ fn make_variable(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> Strin
     format!("{}{}{} {}{};\n", start_indent, q, t, n, v)
 }
 
-fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
+fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, fptr: bool, is_arg: bool) -> String {
     let mut start_indent = String::from("");
-    for _ in 0..num_tabs*depth {
-        start_indent.push(tab_char);
+
+    if !is_arg {
+        for _ in 0..num_tabs*depth {
+            start_indent.push(tab_char);
+        }
     }
 
     let mut f_name = String::from("");
     let mut f_type = String::from("");
     let mut f_qual = String::from("");
+    let fptr_prefix  = if fptr { "(*" } else { "" };
+    let fptr_postfix = if fptr { ")"  } else { "" };
+    
     for a in e.attributes.iter() {
         match a.0.as_ref() {
-            NAME  => if !a.1.is_empty() { f_name = format!(" {}", a.1) },
+            NAME  => if !a.1.is_empty() { f_name = format!(" {}{}{}", fptr_prefix, a.1, fptr_postfix) },
             TYPE  => f_type = format!("{}", a.1),
             QUALIFIER => if !a.1.is_empty() { f_qual = format!("{} ", a.1) },
             _ => {}
@@ -129,11 +136,24 @@ fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> Strin
                 func_str.push_str(format!("{}{}{}", t, n, v).as_str());
                 first_arg = false;
             },
-            _ => panic!("Illegal func child: {}", c.name),
+            FPTR => {
+                let separator = if comma && !first_arg { ", " } else { "" };
+                let fptr_str  = make_function(c, depth, num_tabs, tab_char, true, true);
+                func_str.push_str(format!("{}{}", separator, fptr_str).as_str());
+                first_arg = false;
+            },
+            FUNC => panic!("Illegal func child: {} (did you mean {})?", FUNC, FPTR),
+            _    => panic!("Illegal func child: {}", c.name),
         }
     }
 
-    func_str.push_str(");\n");
+    if is_arg {
+        func_str.push_str(")");
+    }
+    else {
+        func_str.push_str(");\n");
+    }
+
     func_str
 }
 

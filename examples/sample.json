@@ -38,21 +38,44 @@
         "var": {
         "type": "char&",
         "name": "letter"
+        },
+        "fptr": {
+        "type": "bool",
+        "name": "callback",
+        "var": {
+            "type": "int",
+            "name": "code"
+            }
         }
     },
     {
         "type": "void",
-        "name": "process_func"
+        "name": "process_func",
+        "qualifier": "static"
+    }
+    ],
+    "fptr": [
+    {
+        "type": "int",
+        "name": "func_ptr"
     },
     {
-        "type": "void (*fptr)",
-        "var": [
+        "type": "void",
+        "name": "f_ptr",
+        "var": 
         {
             "type": "const int*",
             "name": "fmt"
         },
-        { "type": "char&" }
-        ]
+        "fptr": 
+        {
+            "type": "void",
+            "name": "fptr_arg",
+            "var":
+            {
+                "type": "char&"
+            }
+        }
     }
     ],
     "struct": {
@@ -68,23 +91,25 @@
         "name": "y"
         }
     ],
-    "func": [
-        {
+    "func":
+    {
         "type": "int",
         "name": "return_int",
-        "var": {
+        "var": 
+        {
             "type": "float",
             "name": "arg"
         }
-        },
-        {
-        "type": "void (*internal_ptr)",
+    },
+    "fptr":
+    {
+        "type": "void",
+        "name": "internal_ptr",
         "var": {
             "type": "const char*",
             "name": "arg"
         }
-        }
-    ],
+    },
     "struct": {
         "name": "SubStruct",
         "enum": {

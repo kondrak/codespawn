@@ -3,6 +3,7 @@ pub const CONFIG: &'static str = "config";
 pub const   ENUM: &'static str = "enum";
 pub const    VAR: &'static str = "var";
 pub const   FUNC: &'static str = "func";
+pub const   FPTR: &'static str = "fptr";
 pub const STRUCT: &'static str = "struct";
 
 // element attributes

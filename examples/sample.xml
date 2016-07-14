@@ -59,29 +59,48 @@
 
     * Required attributes:
       - type - Function's return type.
-      - name - Name of the function. This attribute can be skipped if you want to generate a 
-               C/C++ function pointer, in which case the definition will be ignored by Rust.
+      - name - Name of the function.
     * Optional attributes:
       - qualifier - Function's qualifier (extern, static, etc.).
     * Valid children:
-      - <var /> - Function patameter. Name is optional in this case. Function will take no
-                  parameters if no <var />'s are defined
+      - <var />  - Function patameter. Name is optional in this case. Function will take no
+                   parameters if no <var />'s are defined.
+      - <fptr /> - Function parameter expressed as a function pointer.
 -->
-<!-- function: int get_ascii(char& letter); -->
+<!-- function: int get_ascii(char& letter, bool (*callback)(int code)); -->
 <func type="int" name="get_ascii"> 
     <var type="char&amp;" name="letter" />
+    <fptr type="bool" name="callback">
+        <var type="int" name="code" />
+    </fptr>
 </func>
 
 <!-- function: static void process_func(); -->
-<func type="void" name="process_func" />
+<func type="void" name="process_func" qualifier="static" />
 
-<!-- function pointer: void (*fptr)(const int* fmt, char&); 
-     Ignored by Rust.
+<!-- <fptr></fptr>: Generate a function pointer.
+
+    * Required attributes:
+      - type - Function pointer's return type.
+      - name - Name of the function pointer.
+    * Optional attributes:
+      - qualifier - Function pointer's qualifier (extern, static, etc.).
+    * Valid children:
+      - <var />  - Function patameter. Name is optional in this case. Fptr will take no
+                   parameters if no <var />'s are defined.
+      - <fptr /> - Function parameter expressed as a function pointer.
 -->
-<func type="void (*fptr)">
+
+<!-- function pointer: int (*func_ptr)(); -->
+<fptr type="int" name="func_ptr" />
+
+<!-- function pointer: void (*f_ptr)(const int* fmt, void (*fptr_arg)(char&)); -->
+<fptr type="void" name="f_ptr">
     <var type="const int*" name="fmt" />
-    <var type="char&amp;" />
-</func>
+    <fptr type="void" name="fptr_arg">
+        <var type="char&amp;" />
+    </fptr>
+</fptr>
 
 <!-- <struct></struct>: Generate a structure.
 
@@ -92,6 +111,7 @@
     * Valid children:
         - <var />
         - <func></func>
+        - <fptr></fptr>
         - <enum></enum>
         - <struct></struct>
 -->
@@ -102,9 +122,9 @@
     <func type="int" name="return_int">
         <var type="float" name="arg" />
     </func>
-    <func type="void (*internal_ptr)">
+    <fptr type="void" name="internal_ptr">
         <var type="const char*" name="arg" />
-    </func>
+    </fptr>
     <struct name="SubStruct">
         <enum name="SubEnum">
             <var name="SubElement1" />

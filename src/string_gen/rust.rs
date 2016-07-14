@@ -13,7 +13,8 @@ fn parse_item(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_item
     match e.name.as_ref() {
         ENUM   => make_enum(e, depth, num_tabs, tab_char),
         VAR    => make_variable(e, depth, num_tabs, tab_char, struct_item),
-        FUNC   => make_function(e, depth, num_tabs, tab_char, struct_item),
+        FUNC   => make_function(e, depth, num_tabs, tab_char, struct_item, false, false),
+        FPTR   => make_function(e, depth, num_tabs, tab_char, struct_item, true, false),
         STRUCT => make_struct(e, depth, num_tabs, tab_char),
         _ => String::from(""),
     }
@@ -99,10 +100,13 @@ fn make_variable(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_v
     }
 }
 
-fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_func: bool) -> String {
+fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_func: bool, fptr: bool, is_arg: bool) -> String {
     let mut start_indent = String::from("");
-    for _ in 0..num_tabs*depth {
-        start_indent.push(tab_char);
+
+    if !is_arg {
+        for _ in 0..num_tabs*depth {
+            start_indent.push(tab_char);
+        }
     }
 
     let mut f_name = String::from("");
@@ -117,7 +121,12 @@ fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_f
         }
     }
 
-    let mut func_str = format!("{}pub {}: {}fn(", start_indent, f_name, f_qual);
+    // function pointers are external by default
+    f_qual     = if fptr { String::from("extern ") } else { f_qual };
+    // if used as function arg, skip the 'pub' keyword
+    let is_pub = if !is_arg { "pub " } else { "" };
+
+    let mut func_str = format!("{}{}{}: {}fn(", start_indent, is_pub, f_name, f_qual);
     let comma = e.children.len() > 1;
     let mut first_arg = true;
 
@@ -136,15 +145,24 @@ fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_f
                 func_str.push_str(format!("{}{}{}", if comma && !first_arg { ", " } else { "" }, n, t).as_str());
                 first_arg = false;
             },
-            _ => panic!("Illegal func child: {}", c.name),
+            FPTR => {
+                let separator = if comma && !first_arg { ", " } else { "" };
+                let fptr_str  = make_function(c, depth, num_tabs, tab_char, struct_func, true, true);
+                func_str.push_str(format!("{}{}", separator, fptr_str).as_str());
+                first_arg = false;
+            },
+            FUNC => panic!("Illegal func child: {} (did you mean {})?", FUNC, FPTR),
+            _    => panic!("Illegal func child: {}", c.name),
         }
     }
 
     let ret_type = if f_type.is_empty() { f_type } else { format!(" -> {}", f_type) };
-    func_str.push_str(format!("){}{}\n", ret_type, if struct_func { "," } else { ";" }).as_str());
+    let delim    = if struct_func { "," } else { ";" };
 
-    // ignore function pointers
-    if !f_name.is_empty() { func_str } else { String::from("") }
+    func_str.push_str(format!("){}{}{}", ret_type,
+                              if is_arg { "" } else { delim },
+                              if is_arg { "" } else { "\n" }).as_str());
+    func_str
 }
 
 fn make_struct(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
