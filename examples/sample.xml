@@ -1,5 +1,5 @@
 <!-- 
-     Sample API that generates code with all supported features.
+     Sample API v0.1.3 that generates code with all supported features.
 -->
 <?xml version="1.0" encoding="utf-8" ?>
 
@@ -7,7 +7,7 @@
                  You can include as many configs as you want.
      
      * Required attributes: 
-        file - Path to config file.
+        - file - Path to config file.
      * Optional attributes: none
      * Valid children: none
 -->
@@ -22,9 +22,12 @@
                   'type' is overriden to "" in language config (see ellipsis example).
         - name  - Variable name. Requried for standalone variables, optional for function parameters.
     * Optional attributes:
-        - value - Initialization value for the variable or a default value for function parameter.
+        - value     - Initialization value for the variable or a default value for function parameter.
         - qualifier - Variable's qualifier (extern, static, etc.)
-    * Valid children: none
+    * Valid children:
+        - <fptr />  - If <var /> is a function parameter, it can nest a <fptr /> which will
+                      then be interpreted as the actual parameter. In this case, <var /> requires
+                      no atributes.
 -->
 <!-- variable: extern void* void_ptr;  -->
 <var type="void*" name="void_ptr" qualifier="extern" />
@@ -79,6 +82,17 @@
     </fptr>
 </func>
 
+<!-- function: int get_ascii_alt(char& letter, bool (*callback)(int code)); -->
+<!-- Alternative way of defining a <fptr /> as a function parameter -->
+<func type="int" name="get_ascii_alt"> 
+    <var type="char&amp;" name="letter" />
+    <var>
+        <fptr type="bool" name="callback">
+            <var type="int" name="code" />
+        </fptr>
+    </var>
+</func>
+
 <!-- function: static void process_func(); -->
 <func type="void" name="process_func" qualifier="static" />
 
@@ -121,10 +135,10 @@
         attribute - Adds an attribute/decorator to the struct. Ignored by C++.
     * Valid children:
         - <var />
-        - <func></func>
-        - <fptr></fptr>
-        - <enum></enum>
-        - <struct></struct>
+        - <func />
+        - <fptr />
+        - <enum />
+        - <struct />
 -->
 <!-- Generate a structure with nested elements -->
 <struct name="GenericStruct" attribute="C-ABI">

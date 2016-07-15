@@ -52,6 +52,26 @@
         }
     },
     {
+        "type": "int",
+        "name": "get_ascii_alt",
+        "var": [
+            {
+                "type": "char&",
+                "name": "letter"
+            },
+            {
+                "fptr": {
+                "type": "bool",
+                "name": "callback",
+                "var": {
+                    "type": "int",
+                    "name": "code"
+                }
+              }
+            }
+        ]
+    },
+    {
         "type": "void",
         "name": "process_func",
         "qualifier": "static"

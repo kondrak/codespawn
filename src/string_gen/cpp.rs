@@ -140,6 +140,18 @@ fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, fptr: bo
                     };
                 }
 
+                for vc in c.children.iter() {
+                    match vc.name.as_ref() {
+                        FPTR => {
+                            let separator = if comma && !first_arg { ", " } else { "" };
+                            let fptr_str = make_function(vc, depth, num_tabs, tab_char, true, true);
+                            func_str.push_str(format!("{}{}", separator, fptr_str).as_str());
+                            first_arg = false;
+                        },
+                        _ => {}
+                    }
+                }
+
                 // var type undefined or empty (ignored)? skip it
                 if !t.is_empty() {
                     func_str.push_str(format!("{}{}{}", t, n, v).as_str());
