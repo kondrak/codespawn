@@ -1,11 +1,13 @@
 use raw_code::{CodeItem};
+use string_gen::{AUTOGEN_HEADER, AUTOGEN_FOOTER};
 use string_gen::keywords::*;
 
 pub fn convert(code_items: &Vec<CodeItem>, num_tabs: u8, tab_char: char) -> String {
-    let mut code_str = String::from("");
+    let mut code_str = format!("// {}", AUTOGEN_HEADER);
     for i in code_items.iter() {
         code_str = format!("{}{}", code_str, parse_item(i, 0, num_tabs, tab_char, false));
     }
+    code_str.push_str(format!("// {}", AUTOGEN_FOOTER).as_str());
     code_str
 }
 

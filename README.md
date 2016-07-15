@@ -6,7 +6,7 @@ Codespawn
 [![Build status](https://ci.appveyor.com/api/projects/status/3pw4g0n398qpud79?svg=true)](https://ci.appveyor.com/project/kondrak/codespawn)
 [![Coverage Status](https://coveralls.io/repos/github/kondrak/codespawn/badge.svg?branch=master)](https://coveralls.io/github/kondrak/codespawn?branch=master)
 
-Codespawn is a basic C++ and Rust code generator. Desired API can be defined using either JSON or XML and the crate supports both reading from a file or a string. As of 0.1 release, it's possible to generate enums, structs, functions and variables with all applicable attributes and properties.
+Codespawn is a basic C++ and Rust code generator. Desired API can be defined using either JSON or XML and the crate supports both reading from a file or a string. As of 0.1 release, it's possible to generate enums, structs, functions, function pointers and variables with all applicable attributes and properties.
 
 Initially, this crate was created as a helper tool for [ProDBG](https://github.com/emoon/ProDBG). See [example XML](https://github.com/kondrak/codespawn/blob/master/examples/sample.xml) for instructions on how to construct the API definition.
 
