@@ -14,7 +14,11 @@ rust:
   - beta
   - nightly
   - 1.9.0
-  
+
+matrix:
+  allow_failures:
+    - rust: nightly
+
 # load travis-cargo
 before_script:
   - |
