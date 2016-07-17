@@ -69,14 +69,14 @@ pub fn process_json_str(json_str: &str) -> io::Result<RawCode> {
     Ok(generate_raw(&code_data, &config_data))
 }
 
-fn process(json: &(&String, &json::JsonValue), data: &mut Vec<CodeData>, depth: u8) {
-    data.push((json.0.clone(), Vec::<(String, String)>::new(), depth));
+fn process(json: &(&str, &json::JsonValue), data: &mut Vec<CodeData>, depth: u8) {
+    data.push((String::from(json.0), Vec::<(String, String)>::new(), depth));
     let mut attribs = Vec::<(String, String)>::new();
     let idx = data.len() - 1;
     
     for i in json.1.entries() {
         if i.1.entries().count() == 0 && i.1.members().count() == 0 {
-            attribs.push((i.0.clone(), String::from(i.1.as_str().unwrap())));
+            attribs.push((String::from(i.0), String::from(i.1.as_str().unwrap())));
         }
         for j in i.1.members() {
             process(&(&i.0, &j), data, depth+1);

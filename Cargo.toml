@@ -1,8 +1,8 @@
 [package]
 name = "codespawn"
-version = "0.1.3"
+version = "0.1.4"
 description = "C++ and Rust code generator. Supports XML and JSON for API definitions."
-keywords = ["codegen", "gencode", "code", "generator"]
+keywords = ["code", "generator", "codegen", "gencode"]
 license = "MIT/Apache-2.0"
 authors = ["Krzysztof Kondrak <krzysztof.kondrak@gmail.com>"]
 repository = "https://github.com/kondrak/codespawn"
@@ -11,4 +11,4 @@ documentation = "https://kondrak.github.io/codespawn/codespawn/index.html"
 
 [dependencies]
 xml-rs = "0.3"
-json = "0.8"
+json = "0.9"
