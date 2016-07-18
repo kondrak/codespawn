@@ -130,7 +130,7 @@ fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_f
     }
 
     // function pointers are external by default
-    f_qual     = if fptr { String::from("extern ") } else { f_qual };
+    f_qual     = if fptr && f_qual.is_empty() { String::from("extern ") } else { f_qual };
     // if used as function arg, skip the 'pub' keyword
     let is_pub = if !is_arg { "pub " } else { "" };
 
