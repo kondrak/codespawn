@@ -102,11 +102,19 @@ fn make_variable(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_v
 
     // var type undefined or empty (ignored)? skip it
     if !t.is_empty() {
+        // qualifier containing a '<' will be interpreted as a generic, so need to append a '>'
+        if let Some(_) = q.find('<') {
+            return format!("{}pub {}: {}{}{}>;\n", start_indent, n, q, t, v);
+        }
+        else if !q.is_empty() {
+            q.push(' ');
+        }
+
         if struct_var {
             format!("{}pub {}: {}{},\n", start_indent, n, t, v)
         }
         else {
-            format!("{}pub {} {}: {}{};\n", start_indent, q, n, t, v)
+            format!("{}pub {}{}: {}{};\n", start_indent, q, n, t, v)
         }
     }
     else {
@@ -126,17 +134,27 @@ fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_f
     let mut f_name = String::from("");
     let mut f_type = String::from("");
     let mut f_qual = String::from("");
+    let mut opt_suffix = String::from("");
     for a in e.attributes.iter() {
         match a.0.as_ref() {
             NAME  => f_name = format!("{}", a.1),
             TYPE  => f_type = format!("{}", a.1),
-            QUALIFIER => if !a.1.is_empty() { f_qual = format!("{} ", a.1) },
+            QUALIFIER => if !a.1.is_empty() { f_qual = format!("{}", a.1) },
             _ => {}
         }
     }
 
     // function pointers are external by default
-    f_qual     = if fptr && f_qual.is_empty() { String::from("extern ") } else { f_qual };
+    f_qual     = if fptr && f_qual.is_empty() { String::from("extern") } else { f_qual };
+
+    // qualifier containing a '<' will be interpreted as a generic, so need to append a '>'
+    if let Some(_) = f_qual.find('<') {
+        opt_suffix.push_str(">");
+    }
+    else if !f_qual.is_empty() {
+        f_qual.push(' ');
+    }
+
     // if used as function arg, skip the 'pub' keyword
     let is_pub = if !is_arg { "pub " } else { "" };
 
@@ -189,7 +207,7 @@ fn make_function(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_f
     let ret_type = if f_type.is_empty() { f_type } else { format!(" -> {}", f_type) };
     let delim    = if struct_func { "," } else { ";" };
 
-    func_str.push_str(format!("){}{}{}", ret_type,
+    func_str.push_str(format!("){}{}{}{}", ret_type, opt_suffix,
                               if is_arg { "" } else { delim },
                               if is_arg { "" } else { "\n" }).as_str());
     func_str

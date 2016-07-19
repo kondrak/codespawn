@@ -13,6 +13,13 @@
       { "name": "GenericStruct", "value": "RustStruct" },
       { "name": "C-ABI", "value": "#[repr(C)]"},
       { "name": "DERIVE-DBG", "value": "#[derive(Debug)]"},
+      { "name": "OPTION", "value": "Option<" },
+      { "name": "OPTION_FPTR", "value": "Option<extern " },
       { "name": "...", "value": ""}
+    ],
+
+    "cpp": [
+      { "name": "OPTION", "value": "" },
+      { "name": "OPTION_FPTR", "value": "" }
     ]
 }

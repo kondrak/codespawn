@@ -12,7 +12,7 @@
      * Valid children: none
 -->
 <!-- Include config file for Rust -->
-<config file="examples/rust.xml" />
+<config file="examples/config.xml" />
 
 <!-- <var />: Generate a single variable. If nested by <func> tags, the variable
             becomes the function's input parameter. 
@@ -150,15 +150,20 @@
     <attribute name="C-ABI" />
     <attribute name="DERIVE-DBG" />
     <var type="int" name="x" />
-    <var type="int" name="y" />    
+    <var type="int" name="y" />
+    <var type="int" name="opt_var" qualifier="OPTION" />
     <func type="int" name="return_int">
         <var type="float" name="arg" />
+        <fptr type="float" name="opt_func" qualifier="OPTION_FPTR" />
     </func>
     <fptr type="void" name="internal_ptr">
         <var type="const char*" name="arg" />
     </fptr>
+    <fptr type="void" name="opt_fptr" qualifier="OPTION_FPTR">
+        <var type="const char*" name="arg" />
+    </fptr>
     <struct name="SubStruct" attribute="C-ABI">
-        <enum name="SubEnum">
+        <enum name="SubEnum" attribute="DERIVE-DBG">
             <var name="SubElement1" />
             <var name="SubElement2" />
         </enum>

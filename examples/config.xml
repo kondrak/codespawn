@@ -39,5 +39,10 @@
 <rust name="GenericStruct" value="RustStruct" />
 <rust name="C-ABI" value="#[repr(C)]" />
 <rust name="DERIVE-DBG" value="#[derive(Debug)]" />
+<rust name="OPTION" value="Option&lt;" />
+<rust name="OPTION_FPTR" value="Option&lt;extern " />
 <!-- Override ellipsis to ignore this variable type in Rust code -->
 <rust name="..." value="" />
+
+<cpp name="OPTION" value="" />
+<cpp name="OPTION_FPTR" value="" />

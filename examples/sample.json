@@ -1,5 +1,5 @@
 {
-    "config": { "file": "examples/rust.json" },
+    "config": { "file": "examples/config.json" },
     "var": [
     {
         "type": "void*",
@@ -129,6 +129,11 @@
         {
         "type": "int",
         "name": "y"
+        },
+        {
+        "type": "int",
+        "qualifier": "OPTION",
+        "name": "opt_var"
         }
     ],
     "func":
@@ -139,9 +144,15 @@
         {
             "type": "float",
             "name": "arg"
+        },
+        "fptr": 
+        {
+            "type": "float",
+            "name": "opt_func",
+            "qualifier": "OPTION_FPTR"
         }
     },
-    "fptr":
+    "fptr": [
     {
         "type": "void",
         "name": "internal_ptr",
@@ -150,11 +161,22 @@
             "name": "arg"
         }
     },
+    {
+        "type": "void",
+        "name": "opt_fptr",
+        "qualifier": "OPTION_FPTR",
+        "var": {
+            "type": "const char*",
+            "name": "arg"
+        }
+    }
+    ],
     "struct": {
         "name": "SubStruct",
         "attribute" : "C-ABI",
         "enum": {
         "name": "SubEnum",
+        "attribute": "DERIVE-DBG",
         "var": [
             { "name": "SubElement1" },
             { "name": "SubElement2" }
