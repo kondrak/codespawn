@@ -12,6 +12,7 @@
       { "type": "const char*", "value": "*const c_char" },
       { "name": "GenericStruct", "value": "RustStruct" },
       { "name": "C-ABI", "value": "#[repr(C)]"},
+      { "name": "DERIVE-DBG", "value": "#[derive(Debug)]"},
       { "name": "...", "value": ""}
     ]
 }

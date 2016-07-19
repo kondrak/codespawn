@@ -62,6 +62,8 @@ fn make_enum(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
                     enum_str.push_str(format!("{}{} = {},\n", spaces_str, n, v).as_str());
                 }
             },
+            // ignore attributes
+            ATTRIBUTE => {},
             _ => panic!("Illegal enum child: {}", c.name),
         }
     }

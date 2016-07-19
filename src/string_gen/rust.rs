@@ -43,6 +43,7 @@ fn make_enum(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
         }
     }
 
+    let mut attrib_str = String::from("");
     let mut enum_str = format!("\n{}{}pub enum{}{}", e_attr, start_indent, e_name, " {\n");
 
     for c in e.children.iter() {
@@ -66,12 +67,17 @@ fn make_enum(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
                     enum_str.push_str(format!("{}{} = {}{},\n", spaces_str, n, v, t).as_str());
                 }
             },
+            ATTRIBUTE => {
+                for a in c.attributes.iter() {
+                    attrib_str.push_str(format!("\n{}{}", start_indent, a.1).as_str());
+                }
+            },
             _ => panic!("Illegal enum child: {}", c.name),
         }
     }
 
     enum_str.push_str(format!("{}{}", start_indent, "}\n\n").as_str());
-    enum_str
+    format!("{}{}", attrib_str, enum_str)
 }
 
 fn make_variable(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_var: bool) -> String {
@@ -210,12 +216,20 @@ fn make_struct(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String 
         }
     }
 
+    let mut attrib_str = String::from("");
     let mut struct_str = format!("\n{}{}pub struct{}{}", s_attr, start_indent, s_name, " {\n");
 
     for c in e.children.iter() {
-        struct_str.push_str(parse_item(c, depth+1, num_tabs, tab_char, true).as_str());
+        match c.name.as_ref() {
+            ATTRIBUTE => {
+                for a in c.attributes.iter() {
+                    attrib_str.push_str(format!("\n{}{}", start_indent, a.1).as_str());
+                }
+            },
+            _ => { struct_str.push_str(parse_item(c, depth+1, num_tabs, tab_char, true).as_str()); }
+        }
     }
 
     struct_str.push_str(format!("{}{}", start_indent, "}\n\n").as_str());
-    struct_str
+    format!("{}{}", attrib_str, struct_str)
 }

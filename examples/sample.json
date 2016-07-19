@@ -17,7 +17,7 @@
     ],
     "enum": {
     "name": "GenericEnum",
-    "attribute": "C-ABI",
+    "attribute": [ {"name": "C-ABI"}, {"name": "DERIVE-DBG"} ],
     "var": [
         {
         "name": "EnumVal1",
@@ -120,7 +120,7 @@
     ],
     "struct": {
     "name": "GenericStruct",
-    "attribute": "C-ABI",
+    "attribute": [ {"name": "C-ABI"}, {"name": "DERIVE-DBG"} ],
     "var": [
         {
         "type": "int",
@@ -152,6 +152,7 @@
     },
     "struct": {
         "name": "SubStruct",
+        "attribute" : "C-ABI",
         "enum": {
         "name": "SubEnum",
         "var": [
