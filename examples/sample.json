@@ -34,6 +34,35 @@
         }
     ]
     },
+    "bitflags": [
+    {
+    "name": "SampleBitflags",
+    "type": "int",
+    "attribute": [ {"name": "C-ABI"}, {"name": "DERIVE-DBG"} ],
+    "var": [
+        {
+        "name": "Field1",
+        "type": "int",
+        "value": "1"
+        },
+        {
+        "name": "Field2",
+        "type": "int",
+        "value": "2"
+        }
+    ]
+    },
+    {
+    "name": "AltBitflags",
+    "type": "int",
+    "attribute": "C-ABI",
+    "var": {
+        "name": "C_Field1",
+        "type": "int",
+        "value": "1"
+        }
+    }
+    ],
     "func": [
     {
         "type": "int",
