@@ -13,11 +13,12 @@ pub fn convert(code_items: &Vec<CodeItem>, num_tabs: u8, tab_char: char) -> Stri
 
 fn parse_item(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char, struct_item: bool) -> String {
     match e.name.as_ref() {
-        ENUM   => make_enum(e, depth, num_tabs, tab_char),
-        VAR    => make_variable(e, depth, num_tabs, tab_char, struct_item),
-        FUNC   => make_function(e, depth, num_tabs, tab_char, struct_item, false, false),
-        FPTR   => make_function(e, depth, num_tabs, tab_char, struct_item, true, false),
-        STRUCT => make_struct(e, depth, num_tabs, tab_char),
+        ENUM     => make_enum(e, depth, num_tabs, tab_char),
+        VAR      => make_variable(e, depth, num_tabs, tab_char, struct_item),
+        FUNC     => make_function(e, depth, num_tabs, tab_char, struct_item, false, false),
+        FPTR     => make_function(e, depth, num_tabs, tab_char, struct_item, true, false),
+        STRUCT   => make_struct(e, depth, num_tabs, tab_char),
+        BITFLAGS => make_bitflags(e, depth, num_tabs, tab_char),
         _ => String::from(""),
     }
 }
@@ -250,4 +251,59 @@ fn make_struct(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String 
 
     struct_str.push_str(format!("{}{}", start_indent, "}\n\n").as_str());
     format!("{}{}", attrib_str, struct_str)
+}
+
+fn make_bitflags(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
+    let mut start_indent = String::from("");
+    let mut spaces_str = String::from("");
+    for _ in 0..num_tabs*depth+1 {
+        start_indent.push(tab_char);
+        spaces_str.push(tab_char);
+    }
+    for _ in 0..num_tabs {
+        spaces_str.push(tab_char);
+    }
+
+    let mut bf_name = String::from("");
+    let mut bf_type = String::from("");
+    let mut bf_attr = String::from("");
+    for a in e.attributes.iter() {
+        match a.0.as_ref() {
+            NAME  => if !a.1.is_empty() { bf_name = format!(" {}", a.1) },
+            TYPE => if !a.1.is_empty( ) { bf_type = format!(" {}", a.1) },
+            ATTRIBUTE => if !a.1.is_empty() { bf_attr = format!("{}{}\n", start_indent, a.1) },
+            _ => {}
+        }
+    }
+
+    let mut attrib_str = String::from("");
+    let mut bf_str = format!("\n{}{}pub flags{}:{}{}", bf_attr, start_indent, bf_name, bf_type, " {\n");
+
+    for c in e.children.iter() {
+        match c.name.as_ref() {
+            VAR => {
+                let mut n = String::from("");
+                let mut v = String::from("");
+                let mut t = String::from("");
+                for a in c.attributes.iter() {
+                    match a.0.as_ref() {
+                        NAME  => n = format!("{}", a.1),
+                        VALUE => v = format!("{}", a.1),
+                        TYPE  => if !a.1.is_empty() { t = format!(" as {}", a.1) },
+                        _ => {}
+                    };
+                }
+                bf_str.push_str(format!("{}const {} = {}{},\n", spaces_str, n.to_uppercase(), v, t).as_str());
+            },
+            ATTRIBUTE => {
+                for a in c.attributes.iter() {
+                    attrib_str.push_str(format!("\n{}{}", start_indent, a.1).as_str());
+                }
+            },
+            _ => panic!("Illegal bitflag child: {}", c.name),
+        }
+    }
+
+    bf_str.push_str(format!("{}{}", start_indent, "}\n").as_str());
+    format!("{}{}{}{}", "bitflags! {", attrib_str, bf_str, "}\n\n")
 }

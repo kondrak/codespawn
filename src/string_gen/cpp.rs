@@ -13,12 +13,13 @@ pub fn convert(code_items: &Vec<CodeItem>, num_tabs: u8, tab_char: char) -> Stri
 
 fn parse_item(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
     match e.name.as_ref() {
-        ENUM   => make_enum(e, depth, num_tabs, tab_char),
-        VAR    => make_variable(e, depth, num_tabs, tab_char),
-        FUNC   => make_function(e, depth, num_tabs, tab_char, false, false),
-        FPTR   => make_function(e, depth, num_tabs, tab_char, true, false),
-        STRUCT => make_struct(e, depth, num_tabs, tab_char),
-        _      => String::from(""),
+        ENUM     => make_enum(e, depth, num_tabs, tab_char),
+        VAR      => make_variable(e, depth, num_tabs, tab_char),
+        FUNC     => make_function(e, depth, num_tabs, tab_char, false, false),
+        FPTR     => make_function(e, depth, num_tabs, tab_char, true, false),
+        STRUCT   => make_struct(e, depth, num_tabs, tab_char),
+        BITFLAGS => make_enum(e, depth, num_tabs, tab_char),
+        _        => String::from(""),
     }
 }
 

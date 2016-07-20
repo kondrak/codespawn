@@ -5,6 +5,7 @@ pub const    VAR: &'static str = "var";
 pub const   FUNC: &'static str = "func";
 pub const   FPTR: &'static str = "fptr";
 pub const STRUCT: &'static str = "struct";
+pub const BITFLAGS: &'static str = "bitflags";
 
 // element attributes
 pub const  FILE: &'static str = "file";
