@@ -256,7 +256,7 @@ fn make_struct(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String 
 fn make_bitflags(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String {
     let mut start_indent = String::from("");
     let mut spaces_str = String::from("");
-    for _ in 0..num_tabs*depth+1 {
+    for _ in 0..num_tabs*depth {
         start_indent.push(tab_char);
         spaces_str.push(tab_char);
     }
@@ -271,13 +271,13 @@ fn make_bitflags(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> Strin
         match a.0.as_ref() {
             NAME  => if !a.1.is_empty() { bf_name = format!(" {}", a.1) },
             TYPE => if !a.1.is_empty( ) { bf_type = format!(" {}", a.1) },
-            ATTRIBUTE => if !a.1.is_empty() { bf_attr = format!("{}{}\n", start_indent, a.1) },
+            ATTRIBUTE => if !a.1.is_empty() { bf_attr = format!("{}{}\n", spaces_str, a.1) },
             _ => {}
         }
     }
 
     let mut attrib_str = String::from("");
-    let mut bf_str = format!("\n{}{}pub flags{}:{}{}", bf_attr, start_indent, bf_name, bf_type, " {\n");
+    let mut bf_str = format!("\n{}{}flags{}:{}{}", bf_attr, spaces_str, bf_name, bf_type, " {\n");
 
     for c in e.children.iter() {
         match c.name.as_ref() {
@@ -293,17 +293,17 @@ fn make_bitflags(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> Strin
                         _ => {}
                     };
                 }
-                bf_str.push_str(format!("{}const {} = {}{},\n", spaces_str, n.to_uppercase(), v, t).as_str());
+                bf_str.push_str(format!("{}{}const {} = {}{},\n", spaces_str, spaces_str, n.to_uppercase(), v, t).as_str());
             },
             ATTRIBUTE => {
                 for a in c.attributes.iter() {
-                    attrib_str.push_str(format!("\n{}{}", start_indent, a.1).as_str());
+                    attrib_str.push_str(format!("\n{}{}", spaces_str, a.1).as_str());
                 }
             },
             _ => panic!("Illegal bitflag child: {}", c.name),
         }
     }
 
-    bf_str.push_str(format!("{}{}", start_indent, "}\n").as_str());
-    format!("{}{}{}{}", "bitflags! {", attrib_str, bf_str, "}\n\n")
+    bf_str.push_str(format!("{}{}", spaces_str, "}\n").as_str());
+    format!("{}{}{}{}{}{}", start_indent, "bitflags! {", attrib_str, bf_str, start_indent, "}\n\n")
 }
