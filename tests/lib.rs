@@ -90,6 +90,18 @@ fn check_from_json_fail_func() {
 
 #[test]
 #[should_panic]
+fn check_from_xml_fail_bitflags() {
+    let rc = codespawn::from_xml_str("<struct name=\"Foo\"><bitflags name=\"x\" type=\"int\"/><enum></enum></bitflags></struct>").unwrap();
+    rc.to_rust().to_string(); }
+
+#[test]
+#[should_panic]
+fn check_from_json_fail_bitflags() {
+    let rc = codespawn::from_json_str("{\"struct\":{ \"name\":\"Foo\",\"bitflags\": { \"name\":\"x\",\"type\":\"int\", \"enum\": { \"name\": \"foonum\" }}}}").unwrap();
+    rc.to_cpp().to_string(); }
+
+#[test]
+#[should_panic]
 fn check_from_xml_fail_malformed_cfg() {
     let _ = codespawn::from_xml_str("<config file=\"tests/malformed_cfg.xml\"/><var name=\"x\" type=\"int\"/>").unwrap(); }
 
