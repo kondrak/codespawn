@@ -2,7 +2,7 @@
 //! Desired API can be defined using either JSON or XML and the crate supports both reading
 //! from a file or a string.
 //!
-//! As of 0.1 release, it's possible to generate enums, structs, functions, function pointers, variables
+//! Currently it's possible to generate enums, structs, functions, function pointers, variables
 //! and bitflags with all applicable attributes and properties.
 //!
 //! See [example XML](https://github.com/kondrak/codespawn/blob/master/examples/sample.xml) for instructions

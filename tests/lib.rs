@@ -36,7 +36,7 @@ fn check_from_json() {
 
 #[test]
 fn check_simple_json() {
-    let raw_code = codespawn::from_json_str("{\"var\":[{\"void*\":\"void_ptr\"},{\"int\":\"some_number\"}]}").unwrap();
+    let raw_code = codespawn::from_json_str("{\"config\": [\"tests/dummy_cfg.json\", \"examples/rust.json\"],\"var\":[{\"void*\":\"void_ptr\"},{\"int\":\"some_number\"}]}").unwrap();
     let _ = raw_code.to_cpp();
     let _ = raw_code.to_rust();
 }

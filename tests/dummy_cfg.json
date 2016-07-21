@@ -1,0 +1,5 @@
+{
+    "rust": [
+      { "type": "foo", "value": "bar" }
+    ]
+}
