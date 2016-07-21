@@ -36,7 +36,7 @@ fn check_from_json() {
 
 #[test]
 fn check_simple_json() {
-    let raw_code = codespawn::from_json_str("{\"config\": [\"tests/dummy_cfg.json\", \"examples/rust.json\"],\"var\":[{\"void*\":\"void_ptr\"},{\"int\":\"some_number\"}]}").unwrap();
+    let raw_code = codespawn::from_json_str("{\"config\": [\"tests/dummy_cfg.json\", \"examples/config.json\"],\"var\":[{\"void*\":\"void_ptr\"},{\"int\":\"some_number\"}]}").unwrap();
     let _ = raw_code.to_cpp();
     let _ = raw_code.to_rust();
 }
@@ -69,7 +69,7 @@ fn check_from_xml_fail_malformed() {
 #[test]
 #[should_panic]
 fn check_from_json_fail_malformed() {
-    let _ = codespawn::from_json_str("{\"config\": \"examples/rust.json\" \"var\": {\"name\": \"x\", \"type\":\"int\" }}").unwrap(); }
+    let _ = codespawn::from_json_str("{\"config\": \"examples/config.json\" \"var\": {\"name\": \"x\", \"type\":\"int\" }}").unwrap(); }
 
 #[test]
 #[should_panic]
