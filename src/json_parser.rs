@@ -35,7 +35,18 @@ pub fn process_json_str(json_str: &str) -> io::Result<RawCode> {
     let parsed_json = json::parse(json_str).unwrap();
     for i in parsed_json.entries() {
         if i.0 == CONFIG {
-            process(&i, &mut config_tags, 0);
+            if i.1.len() == 0 {
+                let cfg_file = String::from(i.1.as_str().unwrap());
+                config_tags.push((String::from(i.0), vec![(String::from(NAME), cfg_file)], 0));
+            }
+            else {
+                let mut filename_vec = Vec::<(String, String)>::new();
+                for f in 0..i.1.len() {
+                    let cfg_file = String::from(i.1[f].as_str().unwrap());
+                    filename_vec.push((String::from(NAME), cfg_file));
+                }
+                config_tags.push((String::from(i.0), filename_vec, 0));
+            }
         }
         else {
             process(&i, &mut code_data, 0);
@@ -46,7 +57,7 @@ pub fn process_json_str(json_str: &str) -> io::Result<RawCode> {
     let mut json_cfg = String::new();
     for c in config_tags.iter() {
         for a in c.1.iter() {
-            if a.0 == FILE {
+            if a.0 == NAME {
                 let path = Path::new(&a.1);
                 let mut file = match File::open(&path) {
                     Ok(file) => file,
@@ -76,7 +87,14 @@ fn process(json: &(&str, &json::JsonValue), data: &mut Vec<CodeData>, depth: u8)
     
     for i in json.1.entries() {
         if i.1.entries().count() == 0 && i.1.members().count() == 0 {
-            attribs.push((String::from(i.0), String::from(i.1.as_str().unwrap())));
+            if ATTRIB_ARRAY.contains(&i.0) {
+                attribs.push((String::from(i.0), String::from(i.1.as_str().unwrap())));
+            }
+            else {
+                // simplified JSON: unknown keywords will be identified as a type->name pair
+                attribs.push((String::from(NAME), String::from(i.1.as_str().unwrap())));
+                attribs.push((String::from(TYPE), String::from(i.0)));
+            }
         }
         for j in i.1.members() {
             process(&(&i.0, &j), data, depth+1);

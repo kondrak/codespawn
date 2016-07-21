@@ -35,6 +35,13 @@ fn check_from_json() {
 }
 
 #[test]
+fn check_simple_json() {
+    let raw_code = codespawn::from_json_str("{\"var\":[{\"void*\":\"void_ptr\"},{\"int\":\"some_number\"}]}").unwrap();
+    let _ = raw_code.to_cpp();
+    let _ = raw_code.to_rust();
+}
+
+#[test]
 #[should_panic]
 fn check_from_xml_fail() {
     let _ = codespawn::from_xml("foobar").unwrap(); }
@@ -47,22 +54,22 @@ fn check_from_json_fail() {
 #[test]
 #[should_panic]
 fn check_from_xml_fail_cfg() {
-    let _ = codespawn::from_xml_str("<config file=\"foobar\"/><var name=\"x\" type=\"int\"/>").unwrap(); }
+    let _ = codespawn::from_xml_str("<config name=\"foobar\"/><var name=\"x\" type=\"int\"/>").unwrap(); }
 
 #[test]
 #[should_panic]
 fn check_from_json_fail_cfg() {
-    let _ = codespawn::from_json_str("{\"config\": { \"file\": \"foobar\" }, \"var\": {\"name\": \"x\", \"type\":\"int\" }}").unwrap(); }
+    let _ = codespawn::from_json_str("{\"config\": \"foobar\", \"var\": {\"name\": \"x\", \"type\":\"int\" }}").unwrap(); }
 
 #[test]
 #[should_panic]
 fn check_from_xml_fail_malformed() {
-    let _ = codespawn::from_xml_str("<config file=\"foobar\"/>var name=\"x\" type=\"int\"/>").unwrap(); }
+    let _ = codespawn::from_xml_str("<config name=\"foobar\"/>var name=\"x\" type=\"int\"/>").unwrap(); }
 
 #[test]
 #[should_panic]
 fn check_from_json_fail_malformed() {
-    let _ = codespawn::from_json_str("{\"config\": { \"file\": \"examples/rust.json\" } \"var\": {\"name\": \"x\", \"type\":\"int\" }}").unwrap(); }
+    let _ = codespawn::from_json_str("{\"config\": \"examples/rust.json\" \"var\": {\"name\": \"x\", \"type\":\"int\" }}").unwrap(); }
 
 #[test]
 #[should_panic]
@@ -103,7 +110,7 @@ fn check_from_json_fail_bitflags() {
 #[test]
 #[should_panic]
 fn check_from_xml_fail_malformed_cfg() {
-    let _ = codespawn::from_xml_str("<config file=\"tests/malformed_cfg.xml\"/><var name=\"x\" type=\"int\"/>").unwrap(); }
+    let _ = codespawn::from_xml_str("<config name=\"tests/malformed_cfg.xml\"/><var name=\"x\" type=\"int\"/>").unwrap(); }
 
 #[test]
 #[should_panic]

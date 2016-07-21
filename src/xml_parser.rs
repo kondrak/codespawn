@@ -64,7 +64,7 @@ pub fn process_xml_str(xml_str: &str) -> io::Result<RawCode> {
     // process configs, if found
     for c in config_tags.iter() {
         for a in c.1.iter() {
-            if a.0 == FILE {
+            if a.0 == NAME {
                 let path = Path::new(&a.1);
                 let file = match File::open(&path) {
                     Ok(file) => file,

@@ -1,5 +1,5 @@
 {
-    "config": { "file": "examples/config.json" },
+    "config": "examples/config.json",
     "var": [
     {
         "type": "void*",

@@ -12,7 +12,7 @@
      * Valid children: none
 -->
 <!-- Include config file for Rust -->
-<config file="examples/config.xml" />
+<config name="examples/config.xml" />
 
 <!-- <var />: Generate a single variable. If nested by <func> tags, the variable
             becomes the function's input parameter. 

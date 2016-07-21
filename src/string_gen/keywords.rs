@@ -8,7 +8,6 @@ pub const STRUCT: &'static str = "struct";
 pub const BITFLAGS: &'static str = "bitflags";
 
 // element attributes
-pub const  FILE: &'static str = "file";
 pub const  NAME: &'static str = "name";
 pub const  TYPE: &'static str = "type";
 pub const VALUE: &'static str = "value";
@@ -16,3 +15,6 @@ pub const NUM_TABS: &'static str = "num_tabs";
 pub const TAB_CHAR: &'static str = "tab_char";
 pub const ATTRIBUTE: &'static str = "attribute";
 pub const QUALIFIER: &'static str = "qualifier";
+
+pub const ATTRIB_ARRAY: [&'static str; 7] = [NAME, TYPE, VALUE, NUM_TABS,
+                                             TAB_CHAR, ATTRIBUTE, QUALIFIER];

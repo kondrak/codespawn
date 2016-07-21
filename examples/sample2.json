@@ -1,0 +1,53 @@
+{
+    "config": "examples/config.json",
+    "var": [
+    {
+        "void*": "void_ptr",
+        "qualifier": "extern"
+    },
+    { "int": "some_number","value": "1" }
+    ],
+    "enum": {
+    "name": "GenericEnum",
+    "attribute": [ {"name": "C-ABI"}, {"name": "DERIVE-DBG"} ],
+    "var": [
+        { "int": "EnumVal1" },
+        { "int": "EnumVal2" },
+        { "int": "Count", "value": "2" }
+    ]
+    },
+    "bitflags": {
+    "int": "SampleBitflags",
+    "attribute": [ {"name": "C-ABI"}, {"name": "DERIVE-DBG"} ],
+    "var": [
+        { "int": "Field1", "value": "1" },
+        { "int": "Field2", "value": "2" }
+    ]
+    },
+    "func": [
+    {
+        "int": "get_ascii",
+        "var": { "char&": "letter" },
+        "fptr": {
+        "bool": "callback",
+        "var": { "int": "code" }
+        }
+    },
+    {
+        "void": "process_func",
+        "qualifier": "static"
+    }
+    ],
+    "fptr": [
+    { "int": "func_ptr" },
+    {
+        "void": "f_ptr",
+        "var": { "const int*": "fmt" },
+        "fptr": 
+        {
+            "void": "fptr_arg",
+            "var": { "type": "char&" }
+        }
+    }
+    ]
+}
