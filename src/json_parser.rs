@@ -41,8 +41,8 @@ pub fn process_json_str(json_str: &str) -> io::Result<RawCode> {
             }
             else {
                 let mut filename_vec = Vec::<(String, String)>::new();
-                for e in i.1.entries() {
-                    let cfg_file = String::from(e.1.as_str().unwrap());
+                for e in i.1.members() {
+                    let cfg_file = String::from(e.as_str().unwrap());
                     filename_vec.push((String::from(NAME), cfg_file));
                 }
                 config_tags.push((String::from(i.0), filename_vec, 0));
