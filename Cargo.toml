@@ -11,4 +11,4 @@ documentation = "https://kondrak.github.io/codespawn/codespawn/index.html"
 
 [dependencies]
 xml-rs = "0.3"
-json = "0.9"
+json = "0.10"
