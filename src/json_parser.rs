@@ -1,38 +1,28 @@
 extern crate json;
 
-use std::error::Error;
 use std::fs::File;
-use std::io;
-use std::io::Error as IoError;
-use std::io::ErrorKind::Other as ReadError;
 use std::io::prelude::*;
 use std::path::Path;
 
 use string_gen::keywords::*;
+use error::CodeSpawnError;
 use raw_code::{RawCode, CodeData, generate_raw};
 
-pub fn process_json_file(filename: &str) -> io::Result<RawCode> {
+pub fn process_json_file(filename: &str) -> Result<RawCode, CodeSpawnError> {
     let path = Path::new(&filename);
-    let mut file = match File::open(&path) {
-        Ok(file) => file,
-        Err(why) => {
-            return Err(IoError::new(ReadError, format!("Failed to open {} for reading: {}",
-                                                       path.display(), why.description())));
-        }
-    };
-
     let mut json_data = String::new();
+    let mut file = try!(File::open(&path));
     try!(file.read_to_string(&mut json_data));
 
     process_json_str(json_data.as_str())
 }
 
-pub fn process_json_str(json_str: &str) -> io::Result<RawCode> {
+pub fn process_json_str(json_str: &str) -> Result<RawCode, CodeSpawnError> {
     let mut code_data   = Vec::<CodeData>::new();
     let mut config_tags = Vec::<CodeData>::new();
     let mut config_data = Vec::<CodeData>::new();
     
-    let parsed_json = json::parse(json_str).unwrap();
+    let parsed_json = try!(json::parse(json_str));
     for i in parsed_json.entries() {
         if i.0 == CONFIG {
             if i.1.len() == 0 {
@@ -58,18 +48,12 @@ pub fn process_json_str(json_str: &str) -> io::Result<RawCode> {
     for c in config_tags.iter() {
         for a in c.1.iter() {
             if a.0 == NAME {
-                let path = Path::new(&a.1);
-                let mut file = match File::open(&path) {
-                    Ok(file) => file,
-                    Err(why) => {
-                        return Err(IoError::new(ReadError,format!("Failed to open {} for reading: {}",
-                                                                  path.display(), why.description())));
-                    }
-                };
                 json_cfg.clear();
+                let path = Path::new(&a.1);
+                let mut file = try!(File::open(&path));
                 try!(file.read_to_string(&mut json_cfg));
 
-                let parsed_json = json::parse(json_cfg.as_str()).unwrap();
+                let parsed_json = try!(json::parse(json_cfg.as_str()));
                 for i in parsed_json.entries() {
                     process(&i, &mut config_data, 0);
                 }
