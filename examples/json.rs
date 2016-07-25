@@ -5,7 +5,7 @@ fn main()
     // Example of parsing a simplified JSON definition.
     // 'name' and 'type' can be omitted and will be automatically deduced by the parser.
     let raw_code = codespawn::from_json("examples/sample2.json").unwrap_or_else(|e| {
-        panic!(e);
+        panic!("{}", e);
     });
 
     println!("\n*** Language specific configs (if defined):");
