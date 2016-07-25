@@ -44,17 +44,17 @@ fn check_simple_json() {
 #[test]
 #[should_panic]
 fn check_from_xml_fail() {
-    let _ = codespawn::from_xml("foobar").unwrap(); }
+    let _ = codespawn::from_xml("foobar").unwrap_or_else(|e| { panic!("{}", e);}); }
 
 #[test]
 #[should_panic]
 fn check_from_json_fail() {
-    let _ = codespawn::from_json("foobar").unwrap(); }
+    let _ = codespawn::from_json("foobar").unwrap_or_else(|e| { panic!("{}", e);}); }
 
 #[test]
 #[should_panic]
 fn check_from_xml_fail_cfg() {
-    let _ = codespawn::from_xml_str("<config name=\"foobar\"/><var name=\"x\" type=\"int\"/>").unwrap(); }
+    let _ = codespawn::from_xml_str("<config name=\"foobar\"/><var name=\"x\" type=\"int\"/>").unwrap_or_else(|e| { panic!("{}", e);}); }
 
 #[test]
 #[should_panic]
@@ -64,56 +64,56 @@ fn check_from_json_fail_cfg() {
 #[test]
 #[should_panic]
 fn check_from_xml_fail_malformed() {
-    let _ = codespawn::from_xml_str("<config name=\"foobar\"/>var name=\"x\" type=\"int\"/>").unwrap(); }
+    let _ = codespawn::from_xml_str("<config name=\"foobar\"/>var name=\"x\" type=\"int\"/>").unwrap_or_else(|e| { panic!("{}", e);}); }
 
 #[test]
 #[should_panic]
 fn check_from_json_fail_malformed() {
-    let _ = codespawn::from_json_str("{\"config\": \"examples/config.json\" \"var\": {\"name\": \"x\", \"type\":\"int\" }}").unwrap(); }
+    let _ = codespawn::from_json_str("{\"config\": \"examples/config.json\" \"var\": {\"name\": \"x\", \"type\":\"int\" }}").unwrap_or_else(|e| { panic!("{}", e);}); }
 
 #[test]
 #[should_panic]
 fn check_from_xml_fail_enum() {
-    let rc = codespawn::from_xml_str("<enum name=\"Foo\"><func name=\"x\" type=\"int\"/></enum>").unwrap();
+    let rc = codespawn::from_xml_str("<enum name=\"Foo\"><func name=\"x\" type=\"int\"/></enum>").unwrap_or_else(|e| { panic!("{}", e);});
     rc.to_rust().to_string(); }
 
 #[test]
 #[should_panic]
 fn check_from_json_fail_enum() {
-    let rc = codespawn::from_json_str("{\"enum\":{ \"name\":\"Foo\",\"func\": { \"name\":\"x\",\"type\":\"int\"}}}").unwrap();
+    let rc = codespawn::from_json_str("{\"enum\":{ \"name\":\"Foo\",\"func\": { \"name\":\"x\",\"type\":\"int\"}}}").unwrap_or_else(|e| { panic!("{}", e);});
     rc.to_cpp().to_string(); }
 
 #[test]
 #[should_panic]
 fn check_from_xml_fail_func() {
-    let rc = codespawn::from_xml_str("<func name=\"x\" type=\"int\"><enum name=\"Foo\"></enum></func>").unwrap();
+    let rc = codespawn::from_xml_str("<func name=\"x\" type=\"int\"><enum name=\"Foo\"></enum></func>").unwrap_or_else(|e| { panic!("{}", e);});
     rc.to_rust().to_string(); }
 
 #[test]
 #[should_panic]
 fn check_from_json_fail_func() {
-    let rc = codespawn::from_json_str("{\"func\": {\"name\":\"x\",\"type\":\"int\",\"enum\": {\"name\":\"Foo\"}}}").unwrap();
+    let rc = codespawn::from_json_str("{\"func\": {\"name\":\"x\",\"type\":\"int\",\"enum\": {\"name\":\"Foo\"}}}").unwrap_or_else(|e| { panic!("{}", e);});
     rc.to_cpp().to_string(); }
 
 #[test]
 #[should_panic]
 fn check_from_xml_fail_bitflags() {
-    let rc = codespawn::from_xml_str("<struct name=\"Foo\"><bitflags name=\"x\" type=\"int\"><enum></enum></bitflags></struct>").unwrap();
+    let rc = codespawn::from_xml_str("<struct name=\"Foo\"><bitflags name=\"x\" type=\"int\"><enum></enum></bitflags></struct>").unwrap_or_else(|e| { panic!("{}", e);});
     rc.to_rust().to_string(); }
 
 #[test]
 #[should_panic]
 fn check_from_json_fail_bitflags() {
-    let rc = codespawn::from_json_str("{\"struct\":{ \"name\":\"Foo\",\"bitflags\": { \"name\":\"x\",\"type\":\"int\", \"enum\": { \"name\": \"foonum\" }}}}").unwrap();
+    let rc = codespawn::from_json_str("{\"struct\":{ \"name\":\"Foo\",\"bitflags\": { \"name\":\"x\",\"type\":\"int\", \"enum\": { \"name\": \"foonum\" }}}}").unwrap_or_else(|e| { panic!("{}", e);});
     rc.to_rust().to_string(); }
 
 #[test]
 #[should_panic]
 fn check_from_xml_fail_malformed_cfg() {
-    let _ = codespawn::from_xml_str("<config name=\"tests/malformed_cfg.xml\"/><var name=\"x\" type=\"int\"/>").unwrap(); }
+    let _ = codespawn::from_xml_str("<config name=\"tests/malformed_cfg.xml\"/><var name=\"x\" type=\"int\"/>").unwrap_or_else(|e| { panic!("{}", e);}); }
 
 #[test]
 #[should_panic]
 fn check_write_file() {
     let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
-    raw_code.to_cpp().to_file("").unwrap(); }
+    raw_code.to_cpp().to_file("").unwrap_or_else(|e| { panic!("{}", e);}); }
