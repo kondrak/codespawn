@@ -31,13 +31,12 @@
 //!}
 //!```
 #[macro_use]
-mod error;
+pub mod error;
+pub mod raw_code;
+pub mod fmt_code;
 mod xml_parser;
 mod json_parser;
 mod string_gen;
-
-pub mod raw_code;
-pub mod fmt_code;
 
 use error::CodeSpawnError;
 use raw_code::{RawCode};
