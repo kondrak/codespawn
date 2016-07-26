@@ -1,13 +1,10 @@
 //! Structures and formatters for language-specific code data.
 use std::fmt;
 use std::fs::File;
-use std::error::Error;
-use std::io;
-use std::io::Error as IoError;
-use std::io::ErrorKind::Other as ReadError;
 use std::io::prelude::*;
 use std::path::Path;
 
+use error::{CodeSpawnError, Result};
 use raw_code::{CodeItem, CodeConfig, print_code_item};
 use string_gen::keywords::*;
 use string_gen::{code_to_str};
@@ -35,7 +32,7 @@ pub struct FormattedCode {
 
 impl FormattedCode {
     #[doc(hidden)]
-    pub fn new(lang: Lang, cfg: &Option<&CodeConfig>, data: &Vec<CodeItem>) -> FormattedCode {
+    pub fn new(lang: Lang, cfg: &Option<&CodeConfig>, data: &Vec<CodeItem>) -> Result<FormattedCode> {
         let mut fmt_code = FormattedCode {
             language: lang,
             elements: data.to_vec(),
@@ -46,15 +43,15 @@ impl FormattedCode {
         match *cfg {
             Some(config) => {
                 // replace types and names using data from config file
-                fmt_code.process_config(&config);
+                try!(fmt_code.process_config(&config));
             },
             None => {}
         };
 
-        fmt_code
+        Ok(fmt_code)
     }
 
-    fn process_config(&mut self, config: &CodeConfig) {
+    fn process_config(&mut self, config: &CodeConfig) -> Result<()> {
         for (k, v) in config.type_dict.iter() {
             for e in self.elements.iter_mut() {
                 FormattedCode::update_element(e, &k, &v);
@@ -67,11 +64,13 @@ impl FormattedCode {
         }
         for (k, v) in config.global_cfg.iter() {
             match k.as_str() {
-                NUM_TABS => if !v.is_empty() { self.num_tabs = v.parse::<u8>().unwrap(); },
-                TAB_CHAR => if !v.is_empty() { self.tab_char = v.chars().next().unwrap(); },
+                NUM_TABS => if !v.is_empty() { self.num_tabs = try!(v.parse::<u8>()); },
+                TAB_CHAR => if !v.is_empty() { self.tab_char = some!(v.chars().next(), "Invalid iterator"); },
                 _ => {}
             }
         }
+
+        Ok(())
     }
 
     fn update_element(e: &mut CodeItem, key: &String, value: &String) {
@@ -95,20 +94,13 @@ impl FormattedCode {
     /// let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
     ///
     /// // Create a FormattedCode object for C++ language
-    /// let cpp_code = raw_code.to_cpp();
+    /// let cpp_code = raw_code.to_cpp().unwrap();
     /// cpp_code.to_file("examples/sample.cpp");
     /// ```      
-    pub fn to_file(&self, filename: &str) -> io::Result<()> {
+    pub fn to_file(&self, filename: &str) -> Result<()> {
         let code = self.to_string();
         let path = Path::new(&filename);
-        let mut file = match File::create(&path) {
-            Ok(file) => file,
-            Err(why) => {
-                return Err(IoError::new(ReadError, format!("Failed to open {} for writing: {}",
-                                                           path.display(), why.description())));
-            }
-        };
-
+        let mut file = try!(File::create(&path));
         try!(file.write_all(code.as_bytes()));
         Ok(())
     }
@@ -123,7 +115,7 @@ impl FormattedCode {
     /// let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
     ///
     /// // Create a FormattedCode object for C++ language
-    /// let cpp_code = raw_code.to_cpp();
+    /// let cpp_code = raw_code.to_cpp().unwrap();
     /// println!("Generated C++ code:\n {}", cpp_code.to_string());
     /// ```
     pub fn to_string(&self) -> String {

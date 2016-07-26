@@ -7,10 +7,10 @@ use std::path::Path;
 
 use self::xml::reader::{EventReader, XmlEvent};
 use string_gen::keywords::*;
-use error::CodeSpawnError;
+use error::{CodeSpawnError, Result};
 use raw_code::{RawCode, CodeData, generate_raw};
 
-pub fn process_xml_file(filename: &str) -> Result<RawCode, CodeSpawnError> {
+pub fn process_xml_file(filename: &str) -> Result<RawCode> {
     let path = Path::new(&filename);
     let mut xml_data = String::new();
     let mut file = try!(File::open(&path));
@@ -19,7 +19,7 @@ pub fn process_xml_file(filename: &str) -> Result<RawCode, CodeSpawnError> {
     process_xml_str(xml_data.as_str())
 }
 
-pub fn process_xml_str(xml_str: &str) -> Result<RawCode, CodeSpawnError> {
+pub fn process_xml_str(xml_str: &str) -> Result<RawCode> {
     let parser = EventReader::from_str(xml_str);
     let mut code_data = Vec::<CodeData>::new();
     let mut config_tags = Vec::<CodeData>::new();
@@ -78,5 +78,5 @@ pub fn process_xml_str(xml_str: &str) -> Result<RawCode, CodeSpawnError> {
         }
     }
 
-    Ok(generate_raw(&code_data, &config_data))
+    generate_raw(&code_data, &config_data)
 }

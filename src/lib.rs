@@ -21,19 +21,20 @@
 //!    //let raw_code = codespawn::from_json("examples/sample.json").unwrap();
 //!
 //!    // generate code, store as String
-//!    let cpp_code  = raw_code.to_cpp().to_string();
-//!    let rust_code = raw_code.to_rust().to_string();
+//!    let cpp_code  = raw_code.to_cpp().unwrap().to_string();
+//!    let rust_code = raw_code.to_rust().unwrap().to_string();
 //!
 //!    // generate C++ and save directly to file
-//!    raw_code.to_cpp().to_file("examples/sample.cpp");
+//!    raw_code.to_cpp().unwrap().to_file("examples/sample.cpp");
 //!    // generate Rust and save directly to file
-//!    //raw_code.to_rust().to_file("examples/sample.rs");
+//!    //raw_code.to_rust().unwrap().to_file("examples/sample.rs");
 //!}
 //!```
+#[macro_use]
+mod error;
 mod xml_parser;
 mod json_parser;
 mod string_gen;
-mod error;
 
 pub mod raw_code;
 pub mod fmt_code;

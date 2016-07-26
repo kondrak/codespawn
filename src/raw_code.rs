@@ -3,6 +3,7 @@ use std::fmt;
 use std::collections::HashMap;
 use fmt_code::{FormattedCode, Lang};
 use string_gen::keywords::{NAME, TYPE, VALUE};
+use error::{CodeSpawnError, Result};
 
 // (element name, attributes (Vec<name, value>), depth in API file structure)
 #[doc(hidden)]
@@ -89,7 +90,7 @@ impl RawCode {
     /// let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
     /// let cpp_code = raw_code.to_cpp();
     /// ```    
-    pub fn to_cpp(&self) -> FormattedCode {
+    pub fn to_cpp(&self) -> Result<FormattedCode> {
         self.to_lang(Lang::Cpp)
     }
 
@@ -103,12 +104,12 @@ impl RawCode {
     /// let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
     /// let cpp_code = raw_code.to_rust();
     /// ```
-    pub fn to_rust(&self) -> FormattedCode {
+    pub fn to_rust(&self) -> Result<FormattedCode> {
         self.to_lang(Lang::Rust)
     }
 
-    fn to_lang(&self, lang: Lang) -> FormattedCode {
-        let lang_idx = self.supported_langs.get(&lang).unwrap();
+    fn to_lang(&self, lang: Lang) -> Result<FormattedCode> {
+        let lang_idx = some_get!(self.supported_langs.get(&lang));
         FormattedCode::new(lang, &self.configs.get(lang_idx), &self.elements)
     }
 }
@@ -203,7 +204,7 @@ pub fn print_code_item(e: &CodeItem, f: &mut fmt::Formatter, depth: u8, empty_sp
 
 // create RawCode element from pre-parsed data
 #[doc(hidden)]
-pub fn generate_raw(data: &Vec<CodeData>, config_data: &Vec<CodeData>) -> RawCode {
+pub fn generate_raw(data: &Vec<CodeData>, config_data: &Vec<CodeData>) -> Result<RawCode> {
     let mut raw_code = RawCode::new();
 
     for i in config_data.iter() {
@@ -220,15 +221,15 @@ pub fn generate_raw(data: &Vec<CodeData>, config_data: &Vec<CodeData>) -> RawCod
                 NAME  => n = j.1.clone(),
                 TYPE  => t = j.1.clone(),
                 VALUE => v = j.1.clone(),
-                _ => { raw_code.configs.get_mut(&i.0).unwrap().global_cfg.insert(j.0.clone(), j.1.clone()); }
+                _ => { some_get!(raw_code.configs.get_mut(&i.0)).global_cfg.insert(j.0.clone(), j.1.clone()); }
             }
         }
 
         if n.len() > 0 {
-            assert!(raw_code.configs.get_mut(&i.0).unwrap().name_dict.insert(n.clone(), v.clone()) == None, "Name \"{}\" already defined in config! (duplicate: {}={})", n, n, v);
+            assert!(some_get!(raw_code.configs.get_mut(&i.0)).name_dict.insert(n.clone(), v.clone()) == None, "Name \"{}\" already defined in config! (duplicate: {}={})", n, n, v);
         }
         if t.len() > 0 {
-            assert!(raw_code.configs.get_mut(&i.0).unwrap().type_dict.insert(t.clone(), v.clone()) == None, "Type \"{}\" already defined in config! (duplicate: {}={}", t, t, v);
+            assert!(some_get!(raw_code.configs.get_mut(&i.0)).type_dict.insert(t.clone(), v.clone()) == None, "Type \"{}\" already defined in config! (duplicate: {}={}", t, t, v);
         }
     }
 
@@ -239,15 +240,17 @@ pub fn generate_raw(data: &Vec<CodeData>, config_data: &Vec<CodeData>) -> RawCod
         }
         else {
             // recursively process children of a code element
-            fn process_kids(item: &mut CodeItem, depth: u8, name: &str, attribs: &Vec<(String, String)>) {
-                if depth > 1 { process_kids(item.children.last_mut().unwrap(), depth-1, name, attribs); }
+            fn process_kids(item: &mut CodeItem, depth: u8, name: &str, attribs: &Vec<(String, String)>) -> Result<()> {
+                if depth > 1 { try!(process_kids(some_get!(item.children.last_mut()), depth-1, name, attribs)); }
                 else         { item.children.push(CodeItem::new(name, attribs.clone())); }
+
+                Ok(())
             }
 
-            let mut parent = raw_code.elements.last_mut().unwrap();
-            process_kids(parent, i.2, &i.0, &i.1);
+            let mut parent = some_get!(raw_code.elements.last_mut());
+            try!(process_kids(parent, i.2, &i.0, &i.1));
         }
     }
 
-    raw_code
+    Ok(raw_code)
 }

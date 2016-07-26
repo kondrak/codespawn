@@ -9,12 +9,12 @@ fn check_from_xml() {
     }
 
     println!("{}", raw_code);
-    println!("{}", raw_code.to_cpp());
-    println!("{}", raw_code.to_rust());
+    println!("{}", raw_code.to_cpp().unwrap());
+    println!("{}", raw_code.to_rust().unwrap());
 
     // save to .rst file instead of .rs so that subsequent test don't get confused
-    let _ = raw_code.to_rust().to_file("tests/sample.rst");
-    let _ = raw_code.to_cpp().to_file("tests/sample.cpp");
+    let _ = raw_code.to_rust().unwrap().to_file("tests/sample.rst");
+    let _ = raw_code.to_cpp().unwrap().to_file("tests/sample.cpp");
 }
 
 #[test]
@@ -26,12 +26,12 @@ fn check_from_json() {
     }
 
     println!("{}", raw_code);
-    println!("{}", raw_code.to_cpp());
-    println!("{}", raw_code.to_rust());
+    println!("{}", raw_code.to_cpp().unwrap());
+    println!("{}", raw_code.to_rust().unwrap());
 
     // save to .rst file instead of .rs so that subsequent test don't get confused
-    let _ = raw_code.to_rust().to_file("tests/sample.rst");
-    let _ = raw_code.to_cpp().to_file("tests/sample.cpp");
+    let _ = raw_code.to_rust().unwrap().to_file("tests/sample.rst");
+    let _ = raw_code.to_cpp().unwrap().to_file("tests/sample.cpp");
 }
 
 #[test]
@@ -75,37 +75,37 @@ fn check_from_json_fail_malformed() {
 #[should_panic]
 fn check_from_xml_fail_enum() {
     let rc = codespawn::from_xml_str("<enum name=\"Foo\"><func name=\"x\" type=\"int\"/></enum>").unwrap_or_else(|e| { panic!("{}", e);});
-    rc.to_rust().to_string(); }
+    rc.to_rust().unwrap().to_string(); }
 
 #[test]
 #[should_panic]
 fn check_from_json_fail_enum() {
     let rc = codespawn::from_json_str("{\"enum\":{ \"name\":\"Foo\",\"func\": { \"name\":\"x\",\"type\":\"int\"}}}").unwrap_or_else(|e| { panic!("{}", e);});
-    rc.to_cpp().to_string(); }
+    rc.to_cpp().unwrap().to_string(); }
 
 #[test]
 #[should_panic]
 fn check_from_xml_fail_func() {
     let rc = codespawn::from_xml_str("<func name=\"x\" type=\"int\"><enum name=\"Foo\"></enum></func>").unwrap_or_else(|e| { panic!("{}", e);});
-    rc.to_rust().to_string(); }
+    rc.to_rust().unwrap().to_string(); }
 
 #[test]
 #[should_panic]
 fn check_from_json_fail_func() {
     let rc = codespawn::from_json_str("{\"func\": {\"name\":\"x\",\"type\":\"int\",\"enum\": {\"name\":\"Foo\"}}}").unwrap_or_else(|e| { panic!("{}", e);});
-    rc.to_cpp().to_string(); }
+    rc.to_cpp().unwrap().to_string(); }
 
 #[test]
 #[should_panic]
 fn check_from_xml_fail_bitflags() {
     let rc = codespawn::from_xml_str("<struct name=\"Foo\"><bitflags name=\"x\" type=\"int\"><enum></enum></bitflags></struct>").unwrap_or_else(|e| { panic!("{}", e);});
-    rc.to_rust().to_string(); }
+    rc.to_rust().unwrap().to_string(); }
 
 #[test]
 #[should_panic]
 fn check_from_json_fail_bitflags() {
     let rc = codespawn::from_json_str("{\"struct\":{ \"name\":\"Foo\",\"bitflags\": { \"name\":\"x\",\"type\":\"int\", \"enum\": { \"name\": \"foonum\" }}}}").unwrap_or_else(|e| { panic!("{}", e);});
-    rc.to_rust().to_string(); }
+    rc.to_rust().unwrap().to_string(); }
 
 #[test]
 #[should_panic]
@@ -116,4 +116,4 @@ fn check_from_xml_fail_malformed_cfg() {
 #[should_panic]
 fn check_write_file() {
     let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
-    raw_code.to_cpp().to_file("").unwrap_or_else(|e| { panic!("{}", e);}); }
+    raw_code.to_cpp().unwrap().to_file("").unwrap_or_else(|e| { panic!("{}", e);}); }
