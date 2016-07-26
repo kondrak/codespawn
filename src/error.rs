@@ -1,3 +1,4 @@
+//! Error type for codespawn crate.
 extern crate json;
 extern crate xml;
 
@@ -19,13 +20,19 @@ macro_rules! some_get {
     ($x:expr) => (some!($x, "Unable to fetch object."))
 }
 
+/// Result type used throughout the crate.
 pub type Result<T> = result::Result<T, CodeSpawnError>;
 
+/// Error type for codespawn crate.
 #[derive(Debug)]
 pub enum CodeSpawnError {
+    /// I/O error
     Io(io::Error),
+    /// JSON parser error
     Json(json::JsonError),
+    /// XML parser error
     Xml(xml::reader::Error),
+    /// Any other kind of error
     Other(String)
 }
 

@@ -17,7 +17,7 @@ Usage
 ```toml
 # Cargo.toml
 [dependencies]
-codespawn = "0.2"
+codespawn = "0.3"
 ```
 
 Example
@@ -33,12 +33,12 @@ fn main()
     //let raw_code = codespawn::from_json("examples/sample.json").unwrap();
 
     // generate code, store as String
-    let cpp_code  = raw_code.to_cpp().to_string();
-    let rust_code = raw_code.to_rust().to_string();
+    let cpp_code  = raw_code.to_cpp().unwrap().to_string();
+    let rust_code = raw_code.to_rust().unwrap().to_string();
 
     // generate and save directly to file
-    raw_code.to_cpp().to_file("sample.cpp");
-    raw_code.to_rust().to_file("sample.rs");
+    raw_code.to_cpp().unwrap().to_file("sample.cpp");
+    raw_code.to_rust().unwrap().to_file("sample.rs");
 }
 ```
 
@@ -48,6 +48,7 @@ Build instructions
 ```
 cargo build
 cargo run --example xml
+cargo run --example json
 ```
 
 This will run the [example](https://github.com/kondrak/codespawn/blob/master/examples/xml.rs) which will generate code and save it to files using sample XML definition.

@@ -38,7 +38,7 @@ mod xml_parser;
 mod json_parser;
 mod string_gen;
 
-use error::CodeSpawnError;
+use error::Result;
 use raw_code::{RawCode};
 
 /// Reads XML data from file and compiles it into `RawCode`
@@ -50,7 +50,7 @@ use raw_code::{RawCode};
 ///
 /// let raw_code = codespawn::from_xml("examples/sample.xml").unwrap();
 /// ```
-pub fn from_xml(filename: &str) -> Result<RawCode, CodeSpawnError> {
+pub fn from_xml(filename: &str) -> Result<RawCode> {
     xml_parser::process_xml_file(filename)
 }
 
@@ -63,7 +63,7 @@ pub fn from_xml(filename: &str) -> Result<RawCode, CodeSpawnError> {
 ///
 /// let raw_code = codespawn::from_xml_str("<enum name=\"Foo\"><var name=\"EnumVal1\" type=\"int\" /></enum>").unwrap();
 /// ```
-pub fn from_xml_str(xml: &str) -> Result<RawCode, CodeSpawnError> {
+pub fn from_xml_str(xml: &str) -> Result<RawCode> {
     xml_parser::process_xml_str(xml)
 }
 
@@ -76,7 +76,7 @@ pub fn from_xml_str(xml: &str) -> Result<RawCode, CodeSpawnError> {
 ///
 /// let raw_code = codespawn::from_json("examples/sample.json").unwrap();
 /// ```
-pub fn from_json(filename: &str) -> Result<RawCode, CodeSpawnError> {
+pub fn from_json(filename: &str) -> Result<RawCode> {
     json_parser::process_json_file(filename)
 }
 
@@ -89,6 +89,6 @@ pub fn from_json(filename: &str) -> Result<RawCode, CodeSpawnError> {
 ///
 /// let raw_code = codespawn::from_json_str("{\"enum\": { \"name\": \"Foo\",\"var\": {\"name\": \"EnumVal1\",\"type\": \"int\" }}}").unwrap();
 /// ```
-pub fn from_json_str(json: &str) -> Result<RawCode, CodeSpawnError> {
+pub fn from_json_str(json: &str) -> Result<RawCode> {
     json_parser::process_json_str(json)
 }
