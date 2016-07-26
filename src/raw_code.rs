@@ -226,10 +226,10 @@ pub fn generate_raw(data: &Vec<CodeData>, config_data: &Vec<CodeData>) -> Result
         }
 
         if n.len() > 0 {
-            assert!(some_get!(raw_code.configs.get_mut(&i.0)).name_dict.insert(n.clone(), v.clone()) == None, "Name \"{}\" already defined in config! (duplicate: {}={})", n, n, v);
+            some_get!(raw_code.configs.get_mut(&i.0)).name_dict.insert(n.clone(), v.clone());
         }
         if t.len() > 0 {
-            assert!(some_get!(raw_code.configs.get_mut(&i.0)).type_dict.insert(t.clone(), v.clone()) == None, "Type \"{}\" already defined in config! (duplicate: {}={}", t, t, v);
+            some_get!(raw_code.configs.get_mut(&i.0)).type_dict.insert(t.clone(), v.clone());
         }
     }
 
