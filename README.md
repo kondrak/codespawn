@@ -6,7 +6,7 @@ Codespawn
 [![Build Status](https://travis-ci.org/kondrak/codespawn.svg)](https://travis-ci.org/kondrak/codespawn)
 [![Build status](https://ci.appveyor.com/api/projects/status/3pw4g0n398qpud79?svg=true)](https://ci.appveyor.com/project/kondrak/codespawn)
 [![Coverage Status](https://coveralls.io/repos/github/kondrak/codespawn/badge.svg?branch=master)](https://coveralls.io/github/kondrak/codespawn?branch=master)
-![](https://img.shields.io/crates/l/json.svg)
+![http://opensource.org/licenses/MIT](https://img.shields.io/crates/l/json.svg)
 
 Codespawn is a basic C++ and Rust code generator. Desired API can be defined using either JSON or XML and the crate supports both reading from a file or a string. Currently it's possible to generate enums, structs, functions, function pointers, variables and bitflags with all applicable attributes and properties.
 
