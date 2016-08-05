@@ -203,12 +203,12 @@ fn make_struct(e: &CodeItem, depth: u8, num_tabs: u8, tab_char: char) -> String 
         }
     }    
 
-    let mut struct_str = format!("\n{}struct{}{}", start_indent, s_name, " {\n");
+    let mut struct_str = format!("\n{}typedef struct{}{}", start_indent, s_name, " {\n");
 
     for c in e.children.iter() {
         struct_str.push_str(parse_item(c, depth+1, num_tabs, tab_char).as_str());
     }
 
-    struct_str.push_str(format!("{}{}", start_indent, "};\n\n").as_str());
+    struct_str.push_str(format!("{}{}", start_indent, format!("{}{}{}", "}", s_name, ";\n\n")).as_str());
     struct_str
 }
