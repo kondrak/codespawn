@@ -2,16 +2,23 @@
 dofile "examples/config.lua"
 
 code = {
-    func_ptr = { "var", "extern", "void*", "" },
-    some_number = { "var", "", "int", "1" },
-    ignored_var = { "var", "", "", "" },
+    { "var", "extern", "void*", "func_ptr", "" },
+    { "var", "", "int", "int_var", "1" },
 }
 
+function dump(o)
+   if type(o) == 'table' then
+      local s = '{ '
+      for k,v in pairs(o) do
+         if type(k) ~= 'number' then k = '"'..k..'"' end
+         s = s .. '['..k..'] = ' .. dump(v) .. ','
+      end
+      return s .. '} '
+   else
+      return tostring(o)
+   end
+end
+
 function get_code()
-    local code_str = ""
-    for k, v in pairs(code) do
-        code_str = code_str..k
-    end
-    
-    return code_str
+    return dump(code)
 end

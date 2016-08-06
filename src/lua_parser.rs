@@ -90,19 +90,8 @@ fn process_config(name: &str, lua: &mut hlua::Lua, cfg_data: &mut Vec<CodeData>)
 }
 
 fn process_code(lua: &mut hlua::Lua, code_data: &mut Vec<CodeData>) -> Result<()> {
-
     let mut func: LuaFunction<_> = lua.get("get_code").unwrap();
-
     let v: String = func.call().unwrap();
-
-    println!("vaaa {}", v);
-    
-    //let mut code: hlua::LuaTable<_> = some!(lua.get("code"), "'code' array not found!");
-
-    //code.get(0);
-    /*for (k, v) in code.iter::<String, String>().filter_map(|e| e) {
-        println!("ss");
-    }    //process_code(lua, code_data);
-    */
+    println!("Code string: {}", v);
     Ok(())
 }
