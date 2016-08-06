@@ -114,7 +114,7 @@ pub fn from_lua(filename: &str) -> Result<RawCode> {
 /// ```
 /// extern crate codespawn;
 ///
-/// let raw_code = codespawn::from_lua_str("").unwrap();
+/// let raw_code = codespawn::from_lua_str("");
 /// ```
 pub fn from_lua_str(json: &str) -> Result<RawCode> {
     lua_parser::process_lua_str(json)
