@@ -106,16 +106,3 @@ pub fn from_json_str(json: &str) -> Result<RawCode> {
 pub fn from_lua(filename: &str) -> Result<RawCode> {
     lua_parser::process_lua_file(filename)
 }
-
-/// Reads Lua data from a `&str` and compiles it into `RawCode`
-///
-/// # Examples
-///
-/// ```
-/// extern crate codespawn;
-///
-/// let raw_code = codespawn::from_lua_str("");
-/// ```
-pub fn from_lua_str(json: &str) -> Result<RawCode> {
-    lua_parser::process_lua_str(json)
-}
