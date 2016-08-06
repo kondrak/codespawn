@@ -36,6 +36,7 @@ pub mod raw_code;
 pub mod fmt_code;
 mod xml_parser;
 mod json_parser;
+mod lua_parser;
 mod string_gen;
 
 use error::Result;
@@ -91,4 +92,30 @@ pub fn from_json(filename: &str) -> Result<RawCode> {
 /// ```
 pub fn from_json_str(json: &str) -> Result<RawCode> {
     json_parser::process_json_str(json)
+}
+
+/// Reads Lua data from file and compiles it into `RawCode`
+///
+/// # Examples
+///
+/// ```
+/// extern crate codespawn;
+///
+/// let raw_code = codespawn::from_lua("examples/sample.lua").unwrap();
+/// ```
+pub fn from_lua(filename: &str) -> Result<RawCode> {
+    lua_parser::process_lua_file(filename)
+}
+
+/// Reads Lua data from a `&str` and compiles it into `RawCode`
+///
+/// # Examples
+///
+/// ```
+/// extern crate codespawn;
+///
+/// let raw_code = codespawn::from_lua_str().unwrap();
+/// ```
+pub fn from_lua_str(json: &str) -> Result<RawCode> {
+    lua_parser::process_lua_str(json)
 }

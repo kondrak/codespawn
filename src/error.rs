@@ -1,6 +1,7 @@
 //! Error type for codespawn crate.
 extern crate json;
 extern crate xml;
+extern crate hlua;
 
 use std::error::Error;
 use std::fmt;
@@ -32,6 +33,8 @@ pub enum CodeSpawnError {
     Json(json::JsonError),
     /// XML parser error
     Xml(xml::reader::Error),
+    /// Lua parser error
+    Lua(hlua::LuaError),
     /// Any other kind of error
     Other(String)
 }
@@ -42,7 +45,11 @@ impl fmt::Display for CodeSpawnError {
             CodeSpawnError::Io(ref err)    => err.fmt(f),
             CodeSpawnError::Json(ref err)  => err.fmt(f),
             CodeSpawnError::Xml(ref err)   => err.fmt(f),
-            CodeSpawnError::Other(ref err) => err.fmt(f)
+            CodeSpawnError::Other(ref err) => err.fmt(f),
+            CodeSpawnError::Lua(ref err)   => {
+                use std::fmt::Debug;
+                err.fmt(f)
+            }
         }
     }
 }
@@ -53,7 +60,15 @@ impl Error for CodeSpawnError {
             CodeSpawnError::Io(ref err)    => err.description(),
             CodeSpawnError::Json(ref err)  => err.description(),
             CodeSpawnError::Xml(ref err)   => err.description(),
-            CodeSpawnError::Other(ref err) => err
+            CodeSpawnError::Other(ref err) => err,
+            CodeSpawnError::Lua(ref err)   => {
+                match *err {
+                    hlua::LuaError::ExecutionError(ref e) => e,
+                    hlua::LuaError::SyntaxError(ref e)    => e,
+                    hlua::LuaError::ReadError(ref e)      => e.description(),
+                    hlua::LuaError::WrongType => "Wrong data type passed to Lua execute()",
+                }
+            }
         }
     }
 }
@@ -73,6 +88,12 @@ impl From<json::JsonError> for CodeSpawnError {
 impl From<xml::reader::Error> for CodeSpawnError {
     fn from(err: xml::reader::Error) -> CodeSpawnError {
         CodeSpawnError::Xml(err)
+    }
+}
+
+impl From<hlua::LuaError> for CodeSpawnError {
+    fn from(err: hlua::LuaError) -> CodeSpawnError {
+        CodeSpawnError::Lua(err)
     }
 }
 
