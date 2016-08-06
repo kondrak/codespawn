@@ -1,11 +1,12 @@
 extern crate hlua;
 
 use std::fs::File;
+use self::hlua::functions_read::LuaFunction;
 //use std::io::prelude::*;
 use std::path::Path;
 
 use string_gen::keywords::{NAME, TYPE, VALUE};
-use error::{Result};
+use error::{CodeSpawnError, Result};
 use raw_code::{RawCode, CodeData, generate_raw};
 
 pub fn process_lua_file(filename: &str) -> Result<RawCode> {
@@ -27,12 +28,13 @@ pub fn process_lua_str(lua_str: &str) -> Result<RawCode> {
 }
 
 fn process(lua: &mut hlua::Lua) -> Result<RawCode> {
-    let code_data   = Vec::<CodeData>::new();
+    let mut code_data   = Vec::<CodeData>::new();
     let mut config_data = Vec::<CodeData>::new();
 
     process_config("rust", lua, &mut config_data);
     process_config("cpp", lua, &mut config_data);
 
+    try!(process_code(lua, &mut code_data));
     generate_raw(&code_data, &config_data)
 }
 
@@ -85,4 +87,22 @@ fn process_config(name: &str, lua: &mut hlua::Lua, cfg_data: &mut Vec<CodeData>)
         }
         None => {}
     }
+}
+
+fn process_code(lua: &mut hlua::Lua, code_data: &mut Vec<CodeData>) -> Result<()> {
+
+    let mut func: LuaFunction<_> = lua.get("get_code").unwrap();
+
+    let v: String = func.call().unwrap();
+
+    println!("vaaa {}", v);
+    
+    //let mut code: hlua::LuaTable<_> = some!(lua.get("code"), "'code' array not found!");
+
+    //code.get(0);
+    /*for (k, v) in code.iter::<String, String>().filter_map(|e| e) {
+        println!("ss");
+    }    //process_code(lua, code_data);
+    */
+    Ok(())
 }
