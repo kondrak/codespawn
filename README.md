@@ -2,7 +2,7 @@ Codespawn
 =========
 
 [![Crates.io](https://img.shields.io/crates/v/codespawn.svg)](https://crates.io/crates/codespawn)
-[![Documentation](https://img.shields.io/badge/Rust-%20%20Documentation-blue.svg)](https://kondrak.github.io/codespawn/codespawn/index.html)
+[![Documentation](https://docs.rs/codespawn/badge.svg)](https://docs.rs/codespawn)
 [![Build Status](https://travis-ci.org/kondrak/codespawn.svg)](https://travis-ci.org/kondrak/codespawn)
 [![Build status](https://ci.appveyor.com/api/projects/status/3pw4g0n398qpud79?svg=true)](https://ci.appveyor.com/project/kondrak/codespawn)
 [![Coverage Status](https://coveralls.io/repos/github/kondrak/codespawn/badge.svg?branch=master)](https://coveralls.io/github/kondrak/codespawn?branch=master)
@@ -12,7 +12,7 @@ Codespawn is a basic C++ and Rust code generator. Desired API can be defined usi
 
 This crate was created as a helper tool for [ProDBG](https://github.com/emoon/ProDBG). See [example XML](https://github.com/kondrak/codespawn/blob/master/examples/sample.xml) for instructions on how to construct the API definition.
 
-[Documentation](https://kondrak.github.io/codespawn/codespawn/index.html)
+[Documentation](https://docs.rs/codespawn)
 
 Usage
 -----
