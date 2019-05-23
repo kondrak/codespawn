@@ -20,8 +20,8 @@ matrix:
     
 # the main build
 script:
-  - cd codespawn && cargo build && cd ..
-  - cd codespawn_gen && cargo test
+  - cargo build
+  - cd test && cargo test
   
 after_success:
   # Coverage report
@@ -37,7 +37,7 @@ after_success:
         sudo make install &&
         cd ../.. &&
         rm -rf kcov-master &&
-        for file in target/debug/codespawn_gen-*[^\.d]; do mkdir -p "target/cov/$(basename $file)"; kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done &&
+        for file in target/debug/libcodespawn-*[^\.d]; do mkdir -p "target/cov/$(basename $file)"; kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done &&
         bash <(curl -s https://codecov.io/bash) &&
         echo "Uploaded code coverage"
     fi 
