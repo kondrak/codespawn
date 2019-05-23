@@ -21,7 +21,7 @@ matrix:
 # the main build
 script:
   - cargo build
-  - cd test && cargo test
+  - cd tests && cargo test
   
 after_success:
   # Coverage report
