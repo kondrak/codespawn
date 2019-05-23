@@ -13,23 +13,15 @@ rust:
   - stable
   - beta
   - nightly
-  - 1.9.0
 
 matrix:
   allow_failures:
     - rust: nightly
-
-# load travis-cargo
-before_script:
-  - |
-      pip install 'travis-cargo<0.2' --user &&
-      export PATH=$HOME/.local/bin:$PATH
-      
+    
 # the main build
 script:
-  - |
-      travis-cargo build &&
-      travis-cargo test
+  - cd codespawn && cargo build && cd ..
+  - cd codespawn_gen && cargo test
   
 after_success:
   # Coverage report
@@ -49,11 +41,3 @@ after_success:
         bash <(curl -s https://codecov.io/bash) &&
         echo "Uploaded code coverage"
     fi 
-
-env:
-  global:
-    # override the default `--features unstable` used for the nightly branch (optional)
-    # set this to "" instead of nightly right now to workaround a bug in travis-cargo
-    - TRAVIS_CARGO_NIGHTLY_FEATURE=""
-    # encrypted github token for doc upload (see `GH_TOKEN` link above)
-    # - secure: "..."
