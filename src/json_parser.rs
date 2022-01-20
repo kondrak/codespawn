@@ -11,8 +11,8 @@ use raw_code::{RawCode, CodeData, generate_raw};
 pub fn process_json_file(filename: &str) -> Result<RawCode> {
     let path = Path::new(&filename);
     let mut json_data = String::new();
-    let mut file = try!(File::open(&path));
-    try!(file.read_to_string(&mut json_data));
+    let mut file = File::open(&path)?;
+    file.read_to_string(&mut json_data)?;
 
     process_json_str(json_data.as_str())
 }
@@ -22,7 +22,7 @@ pub fn process_json_str(json_str: &str) -> Result<RawCode> {
     let mut config_tags = Vec::<CodeData>::new();
     let mut config_data = Vec::<CodeData>::new();
     
-    let parsed_json = try!(json::parse(json_str));
+    let parsed_json = json::parse(json_str)?;
     for i in parsed_json.entries() {
         if i.0 == CONFIG {
             if i.1.len() == 0 {
@@ -39,7 +39,7 @@ pub fn process_json_str(json_str: &str) -> Result<RawCode> {
             }
         }
         else {
-           try!(process(&i, &mut code_data, 0));
+           process(&i, &mut code_data, 0)?;
         }
     }
 
@@ -50,12 +50,12 @@ pub fn process_json_str(json_str: &str) -> Result<RawCode> {
             if a.0 == NAME {
                 json_cfg.clear();
                 let path = Path::new(&a.1);
-                let mut file = try!(File::open(&path));
-                try!(file.read_to_string(&mut json_cfg));
+                let mut file = File::open(&path)?;
+                file.read_to_string(&mut json_cfg)?;
 
-                let parsed_json = try!(json::parse(json_cfg.as_str()));
+                let parsed_json = json::parse(json_cfg.as_str())?;
                 for i in parsed_json.entries() {
-                    try!(process(&i, &mut config_data, 0));
+                    process(&i, &mut config_data, 0)?;
                 }
             }
         }
@@ -81,15 +81,15 @@ fn process(json: &(&str, &json::JsonValue), data: &mut Vec<CodeData>, depth: u8)
             }
         }
         for j in i.1.members() {
-            try!(process(&(&i.0, &j), data, depth+1));
+            process(&(&i.0, &j), data, depth+1)?;
         }
         if i.1.entries().count() > 0 {
-            try!(process(&i, data, depth+1));
+            process(&i, data, depth+1)?;
         }
     }
 
     for j in json.1.members() {
-       try!(process(&(&json.0, &j), data, depth));
+       process(&(&json.0, &j), data, depth)?;
     }
 
     // assign collected attributes to element

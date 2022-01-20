@@ -9,7 +9,7 @@ use std::io;
 use std::result;
 
 macro_rules! some {
-    ($x:expr, $msg:expr) => (try!($x.ok_or(CodeSpawnError::Other($msg.to_owned()))))
+    ($x:expr, $msg:expr) => ($x.ok_or(CodeSpawnError::Other($msg.to_owned()))?)
 }
 
 macro_rules! some_str {

@@ -13,8 +13,8 @@ use raw_code::{RawCode, CodeData, generate_raw};
 pub fn process_xml_file(filename: &str) -> Result<RawCode> {
     let path = Path::new(&filename);
     let mut xml_data = String::new();
-    let mut file = try!(File::open(&path));
-    try!(file.read_to_string(&mut xml_data));
+    let mut file = File::open(&path)?;
+    file.read_to_string(&mut xml_data)?;
 
     process_xml_str(xml_data.as_str())
 }
@@ -56,7 +56,7 @@ pub fn process_xml_str(xml_str: &str) -> Result<RawCode> {
         for a in c.1.iter() {
             if a.0 == NAME {
                 let path = Path::new(&a.1);
-                let file =try!(File::open(&path));
+                let file =File::open(&path)?;
                 let file = BufReader::new(file);
                 let parser = EventReader::new(file);
                 for e in parser {

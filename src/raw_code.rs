@@ -241,14 +241,14 @@ pub fn generate_raw(data: &Vec<CodeData>, config_data: &Vec<CodeData>) -> Result
         else {
             // recursively process children of a code element
             fn process_kids(item: &mut CodeItem, depth: u8, name: &str, attribs: &Vec<(String, String)>) -> Result<()> {
-                if depth > 1 { try!(process_kids(some_get!(item.children.last_mut()), depth-1, name, attribs)); }
+                if depth > 1 { process_kids(some_get!(item.children.last_mut()), depth-1, name, attribs)?; }
                 else         { item.children.push(CodeItem::new(name, attribs.clone())); }
 
                 Ok(())
             }
 
-            let mut parent = some_get!(raw_code.elements.last_mut());
-            try!(process_kids(parent, i.2, &i.0, &i.1));
+            let parent = some_get!(raw_code.elements.last_mut());
+            process_kids(parent, i.2, &i.0, &i.1)?;
         }
     }
 

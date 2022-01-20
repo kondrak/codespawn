@@ -43,7 +43,7 @@ impl FormattedCode {
         match *cfg {
             Some(config) => {
                 // replace types and names using data from config file
-                try!(fmt_code.process_config(&config));
+                fmt_code.process_config(&config)?;
             },
             None => {}
         };
@@ -64,7 +64,7 @@ impl FormattedCode {
         }
         for (k, v) in config.global_cfg.iter() {
             match k.as_str() {
-                NUM_TABS => if !v.is_empty() { self.num_tabs = try!(v.parse::<u8>()); },
+                NUM_TABS => if !v.is_empty() { self.num_tabs = v.parse::<u8>()?; },
                 TAB_CHAR => if !v.is_empty() { self.tab_char = some!(v.chars().next(), "Invalid iterator"); },
                 _ => {}
             }
@@ -100,8 +100,8 @@ impl FormattedCode {
     pub fn to_file(&self, filename: &str) -> Result<()> {
         let code = self.to_string();
         let path = Path::new(&filename);
-        let mut file = try!(File::create(&path));
-        try!(file.write_all(code.as_bytes()));
+        let mut file = File::create(&path)?;
+        file.write_all(code.as_bytes())?;
         Ok(())
     }
 
