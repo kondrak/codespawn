@@ -3,8 +3,7 @@ Codespawn
 
 [![Crates.io](https://img.shields.io/crates/v/codespawn.svg)](https://crates.io/crates/codespawn)
 [![Documentation](https://docs.rs/codespawn/badge.svg)](https://docs.rs/codespawn)
-[![Build Status](https://travis-ci.org/kondrak/codespawn.svg)](https://travis-ci.org/kondrak/codespawn)
-[![Build status](https://ci.appveyor.com/api/projects/status/3pw4g0n398qpud79?svg=true)](https://ci.appveyor.com/project/kondrak/codespawn)
+[![Build Status](https://img.shields.io/github/workflow/status/kondrak/codespawn/CI?logo=github)](https://github.com/kondrak/codespawn/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/github/kondrak/codespawn/badge.svg?branch=master)](https://coveralls.io/github/kondrak/codespawn?branch=master)
 ![](https://img.shields.io/crates/l/json.svg)
 
